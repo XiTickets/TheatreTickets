@@ -1,18 +1,18 @@
 <%- include('header') %>
-<row centered>
-    <column cols="6">
-        <div class="group">
-            <ul class="breadcrumb">
-                <li><a class="bold">Ticket Selection</a></li>
-                <li><a>Seat Selection</a></li>
-                <li><a>Confirmation</a></li>
-                <li><span>Print Tickets</span></li>
+<div class="row">
+    <div class="small-6 columns">
+        <nav role="navigation">
+            <ul class="breadcrumbs">
+                <li>Ticket Selection</li>
+                <li class="disabled">Seat Selection</li>
+                <li class="disabled">Confirmation</li>
+                <li class="disabled">Print Tickets</li>
             </ul>
-            <!--<button class="btn btn-round btn-small btn-white small right"
-                    onclick="location.href='http://forsyththeater.x10.mx'">Back to Home
-            </button>-->
-        </div>
-    </column>
-</row>
+        </nav>
+    </div>
+    <div class="small-2 columns">
+        <a href="http://forsyththeater.x10.mx" class="button secondary">Back to Home</a>
+    </div>
+</div>
 <%- include('pages/ticketselection') %>
 <%- include('footer') %>
