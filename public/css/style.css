@@ -8,12 +8,16 @@ body {
     overflow: hidden;
 }
 
-div .seatCharts-cell {
+div.seatCharts-cell {
     height: 1.6em;
     width: 1.6em;
     line-height: 1.6em;
 }
 
-div .seatCharts-seat .selected {
+div.seatCharts-seat.selected {
     background-color: blue;
+}
+
+#numberSelected {
+    text-align: right;
 }
