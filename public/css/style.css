@@ -1,3 +1,19 @@
 body {
     padding-top: 1em;
 }
+
+#seatMaps {
+    overflow: scroll;
+    min-width: 1200px;
+    overflow: hidden;
+}
+
+div .seatCharts-cell {
+    height: 1.6em;
+    width: 1.6em;
+    line-height: 1.6em;
+}
+
+div .seatCharts-seat .selected {
+    background-color: blue;
+}
