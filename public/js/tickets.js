@@ -1,3 +1,5 @@
+var selectedSeats = [];
+
 $(document).ready(function() {
     var leftSeatMap = $('#leftSeatMap').seatCharts({
         map: [
@@ -22,20 +24,26 @@ $(document).ready(function() {
         },
         seats: {
             a: {
-                price: 99.99,
-                classes: 'front-seat' //your custom CSS class
+                price: 5.00,
+                classes: 'general'
             }
         },
         click: function () {
             if (this.status() == 'available') {
-                console.log('added ' + this.data().price);
-                //do some stuff, i.e. add to the cart
+                // Add to array
+                selectedSeats.push(this.node()[0].id);
+                // Update counter
+                $('#seatnumber').text(selectedSeats.length);
+                // Update status
                 return 'selected';
             } else if (this.status() == 'selected') {
-                //seat has been vacated
+                // Remove from array
+                selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
+                // Update counter
+                $('#seatnumber').text(selectedSeats.length);
+                // Update status
                 return 'available';
             } else if (this.status() == 'unavailable') {
-                //seat has been already booked
                 return 'unavailable';
             } else {
                 return this.style();
@@ -66,20 +74,26 @@ $(document).ready(function() {
         },
         seats: {
             a: {
-                price: 99.99,
-                classes: 'front-seat' //your custom CSS class
+                price: 5.00,
+                classes: 'general'
             }
         },
         click: function () {
             if (this.status() == 'available') {
-                console.log('added ' + this.data().price);
-                //do some stuff, i.e. add to the cart
+                // Add to array
+                selectedSeats.push(this.node()[0].id);
+                // Update counter
+                $('#seatnumber').text(selectedSeats.length);
+                // Update status
                 return 'selected';
             } else if (this.status() == 'selected') {
-                //seat has been vacated
+                // Remove from array
+                selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
+                // Update counter
+                $('#seatnumber').text(selectedSeats.length);
+                // Update status
                 return 'available';
             } else if (this.status() == 'unavailable') {
-                //seat has been already booked
                 return 'unavailable';
             } else {
                 return this.style();
