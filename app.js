@@ -3,6 +3,19 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'ticketing'
+});
+
+connection.connect(function(err) {
+    if (err) {
+        console.error('Could not connect to MySQL server: ' + err.stack)
+    }
+});
 
 var routes = {
   index: require('./routes/index')
