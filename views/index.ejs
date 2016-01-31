@@ -4,7 +4,7 @@
         <nav role="navigation">
             <ul class="breadcrumbs">
                 <li>Select Seats</li>
-                <li>Checkout</li>
+                <li class="disabled">Checkout</li>
                 <li class="disabled">Print Tickets</li>
             </ul>
         </nav>
@@ -14,6 +14,11 @@
     </div>
 </div>
 <div id="content">
-    <%- include('pages/checkout') %>
+    <%- include('pages/seatselection') %>
 </div>
+<script>
+    $(document).ready(function() {
+        window.templates = <%- JSON.stringify(templates) %>;
+    });
+</script>
 <%- include('footer') %>

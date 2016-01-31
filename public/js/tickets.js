@@ -1,5 +1,8 @@
 var selectedSeats = [];
 
+var templates = require('ejs').render(templates.seatselection);
+$('content').html(templates);
+
 $(document).ready(function () {
     var leftSeatMap = $('#leftSeatMap').seatCharts({
         map: [

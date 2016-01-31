@@ -3,7 +3,6 @@ body {
 }
 
 #seatMaps {
-    overflow: scroll;
     min-width: 1200px;
     overflow: hidden;
 }
