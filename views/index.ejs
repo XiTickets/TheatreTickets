@@ -1,4 +1,4 @@
-<%- include('header') %>
+<%- include header.ejs %>
 <div class="row">
     <div class="small-6 columns">
         <nav role="navigation">
@@ -14,11 +14,6 @@
     </div>
 </div>
 <div id="content">
-    <%- include('pages/seatselection') %>
+    <%- include partials/seatselection.ejs %>
 </div>
-<script>
-    $(document).ready(function() {
-        window.templates = <%- JSON.stringify(templates) %>;
-    });
-</script>
-<%- include('footer') %>
+<%- include footer.ejs %>
