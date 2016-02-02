@@ -8,6 +8,7 @@ $('body').on('click', '#checkoutButton', function() {
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
         var checkout = ejs.render(template);
         $('#content').html(checkout);
+        $('nav ul li:eq(1)').toggleClass('disabled');
 
         /**
          BrainTree Setup
@@ -22,6 +23,7 @@ $('body').on('click', '#checkoutButton', function() {
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template);
         $('#content').html(seatSelection);
+        $('nav ul li:eq(1)').toggleClass('disabled');
         initSeatCharts();
     });
 });
