@@ -1,19 +1,17 @@
 <%- include header.ejs %>
 <div class="row">
-    <div class="small-6 columns">
-        <nav role="navigation">
-            <ul class="breadcrumbs">
+    <div class="col-md-offset-2 col-md-3">
+            <ol class="breadcrumb">
                 <li>Select Seats</li>
-                <li class="disabled">Checkout</li>
-                <li class="disabled">Print Tickets</li>
-            </ul>
-        </nav>
+                <li class="active">Checkout</li>
+                <li class="active">Print Tickets</li>
+            </ol>
     </div>
-    <div class="small-2 columns">
-        <a href="https://forsyththeatre.com" class="button secondary float-right">Back to Home</a>
+    <div class="col-md-offset-3 col-md-2">
+        <a href="https://forsyththeatre.com" class="btn btn-default">Back to Home</a>
     </div>
 </div>
-<div id="content">
+<div class="container" id="content">
     <%- include partials/seatselection.ejs %>
 </div>
 <%- include footer.ejs %>
