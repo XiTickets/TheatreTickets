@@ -20,3 +20,7 @@ div.seatCharts-seat.selected {
 #numberSelected {
     text-align: right;
 }
+
+#seatsError {
+    display: none;
+}

@@ -5,6 +5,11 @@ $(document).ready(function() {
 });
 
 $('body').on('click', '#checkoutButton', function() {
+    if (selectedSeats.length <= 0) {
+        $('#seatsError').show();
+        return;
+    }
+
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
         var checkout = ejs.render(template);
         $('#content').html(checkout);
