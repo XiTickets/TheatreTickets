@@ -3,6 +3,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var braintree = require('braintree');
 /*var mysql = require('mysql');
  var connection = mysql.createConnection({
  host: 'localhost',
@@ -63,5 +64,12 @@ app.use(function(err, req, res, next) {
     });
 });
 
+// Load Braintree Gateway
+var gateway = braintree.connect({
+    environment: braintree.Environment.Sandbox,
+    merchantId: 'cwznyw6q4qvn6rxk',
+    publicKey: 'vry5k83ymbh6wnnx',
+    privateKey: '040965d85dd2b82bb5cf3cbef251053f'
+});
 
 module.exports = app;
