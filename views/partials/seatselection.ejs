@@ -1,24 +1,16 @@
 <div class="row" id="seatMaps">
-    <div class="col-md-6 columns">
+    <div class="col-md-6">
         <div id="leftSeatMap"></div>
     </div>
-    <div class="col-md-6 columns">
+    <div class="col-md-6">
         <div id="rightSeatMap"></div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-offset-8 col-md-2" id="numberSelected">
-        <h5><span id="seatnumber">0</span> seats selected</h5>
+        <h4><span id="seatnumber">0</span> seats selected</h4>
     </div>
     <div class="col-md-2">
-        <button class="button" id="checkoutButton">Checkout</button>
-    </div>
-</div>
-<div class="row" id="seatsError">
-    <div class="small-offset-7 small-5 columns">
-        <div class="alert alert-danger" role="alert">
-            Please select your seats to proceed to checkout.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
+        <button class="btn btn-primary" id="checkoutButton" data-content="Please select your seats first." data-placement="top">Checkout</button>
     </div>
 </div>

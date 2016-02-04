@@ -1,5 +1,6 @@
 body {
     padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 #seatMaps {
@@ -21,6 +22,6 @@ div.seatCharts-seat.selected {
     text-align: right;
 }
 
-#seatsError {
-    /*display: none;*/
+.breadcrumb {
+    background: transparent;
 }

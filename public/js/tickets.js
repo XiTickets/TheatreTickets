@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 $('body').on('click', '#checkoutButton', function() {
     if (selectedSeats.length <= 0) {
-        $('#seatsError').show();
+        $('#checkoutButton').popover('show');
         return;
     }
 
@@ -25,6 +25,7 @@ $('body').on('click', '#checkoutButton', function() {
         });
     });
 }).on('click', '#checkoutGoBackButton', function() {
+    selectedSeats = [];
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template);
         $('#content').html(seatSelection);
