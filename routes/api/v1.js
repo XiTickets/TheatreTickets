@@ -21,10 +21,11 @@ router.get('/token', function (req, res) {
     });
 });
 
-router.post('/process', jsonParser, function (req, res) {
+router.post('/process', function (req, res) {
     gateway.customer.create({
-        firstName: req.firstName,
-        lastName: req.lastName
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        paymentMethodNonce: req.payment_method_nonce
     });
 });
 
