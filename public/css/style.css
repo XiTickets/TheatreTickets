@@ -3,7 +3,7 @@ body {
     padding-bottom: 1em;
 }
 
-#seatMaps {
+#seat-maps {
     min-width: 1200px;
     overflow: hidden;
 }
@@ -24,6 +24,10 @@ div.seatCharts-seat.selected {
 
 .breadcrumb {
     background: transparent;
+}
+
+.pre-footer {
+    margin-top: 10px;
 }
 
 .braintree-hosted-fields-focused {
