@@ -4,7 +4,6 @@ body {
 }
 
 #seat-maps {
-    min-width: 1200px;
     overflow: hidden;
 }
 
@@ -30,11 +29,35 @@ div.seatCharts-seat.selected {
     margin-top: 10px;
 }
 
+#secure-lock {
+    width: 250px;
+    height: 75px;
+    background: url("/img/secure-lock.png") no-repeat;
+}
+
+#stage-box {
+    width: 100%;
+    height: 80px;
+    border: 15px solid;
+    border-top: 10px;
+    border-radius: 0 0 50px 50px;
+    -moz-border-radius: 0 0 90px 90px;
+    -webkit-border-radius: 0 0 90px 90px;
+    margin-bottom: 20px;
+    margin-left: 5px;
+}
+
+#stage-box h1 {
+    font-family: "Arial Black", Gadget, sans-serif;
+    text-align: center;
+    vertical-align: middle;
+}
+
 .braintree-hosted-fields-focused {
     border-color: #66afe9;
     outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
 }
 
 .braintree-hosted-fields-valid {
