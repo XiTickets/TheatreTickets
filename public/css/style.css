@@ -4,7 +4,7 @@ body {
 }
 
 #seat-maps {
-    min-width: 100%;
+    min-width: 1150px;
     overflow: hidden;
 }
 
@@ -37,7 +37,7 @@ div.seatCharts-seat.selected {
 }
 
 #stage-box {
-    width: 100%;
+    width: 1150px;
     height: 80px;
     border: 15px solid;
     border-top: 10px;
