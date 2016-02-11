@@ -4,6 +4,7 @@ body {
 }
 
 #seat-maps {
+    min-width: 100%;
     overflow: hidden;
 }
 
