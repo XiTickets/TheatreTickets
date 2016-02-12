@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var braintree = require('braintree');
-var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
 
 var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
@@ -21,11 +19,25 @@ router.get('/token', function (req, res) {
     });
 });
 
-router.post('/process', function (req, res) {
-    gateway.customer.create({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        paymentMethodNonce: req.payment_method_nonce
+router.post('/checkout', function (req, res) {
+    gateway.transaction.sale({
+        amount: req.body.amount,
+        paymentMethodNonce: 'fake_valid_nonce'/*req.body.payment_method_nonce*/
+    }, function (err, result) {
+        if (err) throw err;
+
+        var confirmationNumber = ((Math.random() * 1000000)) + 1;
+
+        if (result.success) {
+            console.log('Debug 1');
+            res.json({
+                "confirmationNumber": confirmationNumber,
+                "card": {
+                    "last4": result.creditCard.last4,
+                    "type": result.creditCard.cardType
+                }
+            });
+        }
     });
 });
 
