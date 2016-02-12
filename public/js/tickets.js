@@ -51,6 +51,18 @@ $('body').on('click', '#checkoutButton', function() {
                 });
             }
         });
+
+        $('#secure-popover-text').popover({
+            trigger: 'click hover focus',
+            content: 'All credit card information is processed by our external provider, <a href="https://www.braintreepayments.com/">BrainTree</a>, and fully encrypted every step of the way.',
+            html: true,
+            placement: 'right',
+            container: 'body',
+            delay: {
+                "show": 100,
+                "hide": 600
+            }
+        });
     });
 }).on('click', '#checkoutGoBackButton', function() {
     selectedSeats = [];

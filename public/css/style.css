@@ -16,8 +16,8 @@ div.seatCharts-cell {
 
 div.seatCharts-seat.selected {
     background-color: blue;
-}
 
+}
 #numberSelected {
     text-align: right;
 }
@@ -51,6 +51,10 @@ div.seatCharts-seat.selected {
     font-family: "Arial Black", Gadget, sans-serif;
     text-align: center;
     vertical-align: middle;
+}
+
+#secure-popover {
+    width: 100px;
 }
 
 .braintree-hosted-fields-focused {
