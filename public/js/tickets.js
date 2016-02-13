@@ -36,7 +36,7 @@ $('body').on('click', '#checkoutButton', function() {
                         },
                         expirationDate: {
                             selector: '#expiration-date',
-                            placeholder: 'Expiration'
+                            placeholder: 'MM/YY'
                         },
                         styles: {
                             'input': {
