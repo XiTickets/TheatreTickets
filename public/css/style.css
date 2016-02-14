@@ -1,7 +1,19 @@
+/* General */
+
 body {
     padding-top: 1em;
     padding-bottom: 1em;
 }
+
+.breadcrumb {
+    background: transparent;
+}
+
+.pre-footer {
+    margin-top: 10px;
+}
+
+/* Seating Chart */
 
 #seat-maps {
     min-width: 1150px;
@@ -16,18 +28,10 @@ div.seatCharts-cell {
 
 div.seatCharts-seat.selected {
     background-color: blue;
-
 }
+
 #numberSelected {
     text-align: right;
-}
-
-.breadcrumb {
-    background: transparent;
-}
-
-.pre-footer {
-    margin-top: 10px;
 }
 
 #stage-box {
@@ -47,6 +51,12 @@ div.seatCharts-seat.selected {
     vertical-align: middle;
 }
 
+/* Checkout */
+
+#payment-form-container {
+    height: 100%;
+}
+
 #secure-popover {
     width: 100px;
 }
@@ -54,6 +64,41 @@ div.seatCharts-seat.selected {
 #secure-popover-text {
     outline: 0;
 }
+
+/* Braintree */
+
+.braintree-hosted-fields-focused {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+.braintree-hosted-fields-valid {
+    border-color: #3c763d;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+
+.braintree-hosted-fields-valid.braintree-hosted-fields-focused {
+    border-color: #2b542c;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
+}
+
+.braintree-hosted-fields-invalid {
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+
+.braintree-hosted-fields-invalid.braintree-hosted-fields-focused {
+    border-color: #843534;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
+}
+
+/* Loading Spinner */
 
 .spinner {
     width: 40px;
@@ -95,35 +140,4 @@ div.seatCharts-seat.selected {
           transform: scale(1.0);
           -webkit-transform: scale(1.0);
       }
-}
-
-.braintree-hosted-fields-focused {
-    border-color: #66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-}
-
-.braintree-hosted-fields-valid {
-    border-color: #3c763d;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-.braintree-hosted-fields-valid.braintree-hosted-fields-focused {
-    border-color: #2b542c;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
-}
-
-.braintree-hosted-fields-invalid {
-    border-color: #a94442;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-.braintree-hosted-fields-invalid.braintree-hosted-fields-focused {
-    border-color: #843534;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
 }
