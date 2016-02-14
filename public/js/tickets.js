@@ -11,7 +11,7 @@ $('body').on('click', '#checkoutButton', function() {
     }
 
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
-        var checkout = ejs.render(template);
+        var checkout = ejs.render(template, {numberOfSeats: selectedSeats.length});
         $('#content').html(checkout);
         $('.breadcrumb li:eq(1)').toggleClass('active');
 
@@ -27,7 +27,7 @@ $('body').on('click', '#checkoutButton', function() {
                     id: 'payment-form',
                     onReady: function() {
                         $('.spinner').remove();
-                        $('#payment-form-container').removeClass('hidden');
+                        $('#payment-form').removeClass('hidden');
                     },
                     hostedFields: {
                         number: {
