@@ -25,6 +25,10 @@ $('body').on('click', '#checkoutButton', function() {
             success: function(data) {
                 braintree.setup(data.clientToken, 'custom', {
                     id: 'payment-form',
+                    onReady: function() {
+                        $('.spinner').remove();
+                        $('#payment-form-container').removeClass('hidden');
+                    },
                     hostedFields: {
                         number: {
                             selector: '#card-number',
