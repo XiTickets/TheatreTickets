@@ -4,9 +4,9 @@ $(document).ready(function() {
     initSeatCharts();
 });
 
-$('body').on('click', '#checkoutButton', function() {
+$('body').on('click', '#checkout-button', function() {
     if (selectedSeats.length <= 0) {
-        $('#checkoutButton').popover('show');
+        $('#checkout-button').popover('show');
         return;
     }
 
@@ -15,9 +15,7 @@ $('body').on('click', '#checkoutButton', function() {
         $('#content').html(checkout);
         $('.breadcrumb li:eq(1)').toggleClass('active');
 
-        /**
-         BrainTree Setup
-         */
+        // Braintree Setup
         $.ajax({
             type: 'GET',
             url: '/api/v1/token',
@@ -28,6 +26,35 @@ $('body').on('click', '#checkoutButton', function() {
                     onReady: function() {
                         $('.spinner').remove();
                         $('#payment-form').removeClass('hidden');
+                    },
+                    onPaymentMethodReceived: function(obj) {
+                        var paymentForm = $('#payment-form');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/v1/checkout',
+                            dataType: 'JSON',
+                            data: {
+                                seats: $("input[name=seats]").val(),
+                                paymentMethodNonce: obj['nonce'],
+                                firstName: $("input[name=firstName]").val(),
+                                lastName: $("input[name=lastName]").val(),
+                                email: $("input[name=email]").val(),
+                                phone: $("input[name=phone]").val(),
+                                address: $("input[name=address]").val(),
+                                city: $("input[name=city]").val(),
+                                state: $("input[name=state]").val(),
+                                zip: $("input[name=zip]").val()
+                            },
+                            success: function(data) {
+                                getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                                    var confirmation = ejs.render(template, {
+                                        confirmationNumber: data.confirmationNumber
+                                    });
+                                    $('#content').html(confirmation);
+                                    $('.breadcrumb li:eq(3)').toggleClass('active');
+                                });
+                            }
+                        });
                     },
                     hostedFields: {
                         number: {
@@ -68,7 +95,7 @@ $('body').on('click', '#checkoutButton', function() {
             }
         });
     });
-}).on('click', '#checkoutGoBackButton', function() {
+}).on('click', '#checkout-goback-button', function() {
     selectedSeats = [];
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template);
@@ -123,14 +150,14 @@ function initSeatCharts() {
                 // Add to array
                 selectedSeats.push(this.node()[0].id);
                 // Update counter
-                $('#seatnumber').text(selectedSeats.length);
+                $('#seat-number').text(selectedSeats.length);
                 // Update status
                 return 'selected';
             } else if (this.status() == 'selected') {
                 // Remove from array
                 selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
                 // Update counter
-                $('#seatnumber').text(selectedSeats.length);
+                $('#seat-number').text(selectedSeats.length);
                 // Update status
                 return 'available';
             } else if (this.status() == 'unavailable') {
@@ -173,14 +200,14 @@ function initSeatCharts() {
                 // Add to array
                 selectedSeats.push(this.node()[0].id);
                 // Update counter
-                $('#seatnumber').text(selectedSeats.length);
+                $('#seat-number').text(selectedSeats.length);
                 // Update status
                 return 'selected';
             } else if (this.status() == 'selected') {
                 // Remove from array
                 selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
                 // Update counter
-                $('#seatnumber').text(selectedSeats.length);
+                $('#seat-number').text(selectedSeats.length);
                 // Update status
                 return 'available';
             } else if (this.status() == 'unavailable') {

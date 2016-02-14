@@ -30,7 +30,7 @@ div.seatCharts-seat.selected {
     background-color: blue;
 }
 
-#numberSelected {
+#selected-number {
     text-align: right;
 }
 

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var braintree = require('braintree');
+var mailgun = require('mailgun-js')({apiKey: 'key-d141be8ca986a254ab9e272aaffbc592', domain: 'forsyththeatre.com'});
 
 var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
@@ -10,8 +11,8 @@ var gateway = braintree.connect({
     privateKey: '040965d85dd2b82bb5cf3cbef251053f'
 });
 
-router.get('/token', function (req, res) {
-    gateway.clientToken.generate({}, function (err, response) {
+router.get('/token', function(req, res) {
+    gateway.clientToken.generate({}, function(err, response) {
         if (err) throw err;
         res.json({
             "clientToken": response.clientToken
@@ -19,15 +20,15 @@ router.get('/token', function (req, res) {
     });
 });
 
-router.post('/checkout', function (req, res) {
+router.post('/checkout', function(req, res) {
     gateway.transaction.sale({
         amount: req.body.seats.split(',').length * 5,
-        paymentMethodNonce: req.body.payment_method_nonce,
+        paymentMethodNonce: req.body.paymentMethodNonce,
         customer: {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-            phone: req.body.phone,
-            email: req.body.email
+            email: req.body.email,
+            phone: req.body.phone
         },
         billing: {
             firstName: req.body.firstName,
@@ -41,11 +42,12 @@ router.post('/checkout', function (req, res) {
         options: {
             submitForSettlement: true
         }
-    }, function (err, result) {
+    }, function(err, result) {
         if (err) throw err;
 
         if (result.success) {
             var transaction = result.transaction;
+
             res.json({
                 "confirmationNumber": transaction.id,
                 "card": {
@@ -53,8 +55,15 @@ router.post('/checkout', function (req, res) {
                     "type": transaction.creditCard.cardType
                 }
             });
-        } else {
-            res.send('Sorry, but the transaction failed.');
+
+            mailgun.messages().send({
+                from: 'Forsyth Theatre <mail@forsyththeatre.com>',
+                to: transaction.customer.email,
+                subject: 'Ticket Confirmation ' + transaction.id,
+                text: 'Thank you for purchasing tickets for Into the Woods! Your confirmation number is ' + transaction.id + '. You will need this number when picking up tickets in the lobby. Here are the details of your transaction:'
+            }, function(err, body) {
+                if (err) throw err;
+            });
         }
     });
 });

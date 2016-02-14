@@ -3,23 +3,27 @@
         <div class="col-xs-4">
             <img src="http://www.woodstocktheatre.org/wp-content/uploads/2016/01/Into-the-Woods.jpg" width="100%">
         </div>
+
         <div class="col-xs-4">
             <h4>Into the Woods</h4>
             <h5>Saturday, April 16, 7:00pm</h5>
         </div>
+
         <div class="col-xs-4">
             <p>Number of Tickets: <b><%- selectedSeats.length %></b></p>
             <p>Total Price: <b>$<%- selectedSeats.length * 5 %>.00</b></p>
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-xs-offset-2 col-xs-8 well">
         <div class="spinner">
             <div class="double-bounce1"></div>
             <div class="double-bounce2"></div>
         </div>
-        <form action="/api/v1/checkout" method="post" id="payment-form" class="hidden">
+
+        <form id="payment-form" class="hidden">
             <div class="row">
                 <button id="secure-popover-text" href="#" class="btn btn-link pull-right" type="button">
                     <small><span class="glyphicon glyphicon-lock"></span> Your information is secure.</small>
@@ -77,14 +81,15 @@
             <div class="row">
                 <div class="col-xs-offset-10 col-xs-2">
                     <input type="hidden" value="<%- selectedSeats.join() %>" name="seats" />
-                    <input class="btn btn-primary pull-right" type="submit" value="Purchase">
+                    <input class="btn btn-primary pull-right" id="purchase-button" type="submit" value="Purchase">
                 </div>
             </div>
         </form>
     </div>
 </div>
+
 <div class="row pre-footer">
     <div class="col-xs-2">
-        <button class="btn btn-default" id="checkoutGoBackButton">Go Back</button>
+        <button class="btn btn-default" id="checkout-goback-button">Go Back</button>
     </div>
 </div>
