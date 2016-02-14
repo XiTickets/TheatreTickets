@@ -8,8 +8,8 @@
             <h5>Saturday, April 16, 7:00pm</h5>
         </div>
         <div class="col-xs-4">
-            <p>Number of Tickets: <b><%- numberOfSeats %></b></p>
-            <p>Total Price: <b>$<%- numberOfSeats * 5 %>.00</b></p>
+            <p>Number of Tickets: <b><%- selectedSeats.length %></b></p>
+            <p>Total Price: <b>$<%- selectedSeats.length * 5 %>.00</b></p>
         </div>
     </div>
 </div>
@@ -76,6 +76,7 @@
 
             <div class="row">
                 <div class="col-xs-offset-10 col-xs-2">
+                    <input type="hidden" value="<%- selectedSeats.join() %>" name="seats" />
                     <input class="btn btn-primary pull-right" type="submit" value="Purchase">
                 </div>
             </div>

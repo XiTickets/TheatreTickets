@@ -11,7 +11,7 @@ $('body').on('click', '#checkoutButton', function() {
     }
 
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
-        var checkout = ejs.render(template, {numberOfSeats: selectedSeats.length});
+        var checkout = ejs.render(template, {selectedSeats: selectedSeats});
         $('#content').html(checkout);
         $('.breadcrumb li:eq(1)').toggleClass('active');
 

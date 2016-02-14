@@ -21,7 +21,7 @@ router.get('/token', function (req, res) {
 
 router.post('/checkout', function (req, res) {
     gateway.transaction.sale({
-        amount: '5.00',
+        amount: req.body.seats.split(',').length * 5,
         paymentMethodNonce: req.body.payment_method_nonce,
         customer: {
             firstName: req.body.firstName,
