@@ -30,12 +30,6 @@ div.seatCharts-seat.selected {
     margin-top: 10px;
 }
 
-#secure-lock {
-    width: 250px;
-    height: 75px;
-    background: url("/img/secure-lock.png") no-repeat;
-}
-
 #stage-box {
     width: 1150px;
     height: 80px;
@@ -55,6 +49,10 @@ div.seatCharts-seat.selected {
 
 #secure-popover {
     width: 100px;
+}
+
+#secure-popover-text {
+    outline: 0;
 }
 
 .spinner {
