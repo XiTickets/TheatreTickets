@@ -2,25 +2,7 @@ var selectedShow = 0;
 var selectedSeats = [];
 
 $(document).ready(function() {
-    $.ajax({
-        type: 'GET',
-        url: '/api/v1/shows',
-        dataType: 'JSON',
-        success: function(data) {
-            var html = '';
-            data.forEach(function(show) {
-                var time = new Date(show.time);
-                html += '<a href="#" class="show-selection-link"><div class="col-xs-4" id="show-' + show.id + '"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
-                    show.name + '</h3><h4>' + (time.getMonth() + 1) + '/'
-                    + time.getDate() + '/'
-                    + time.getFullYear() + ' '
-                    + ((time.getHours() + 24) % 12 || 12) + ':'
-                    + ('0' + time.getMinutes()).slice(-2)
-                    + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div></a>';
-            });
-            $('#show-selection-container').html(html);
-        }
-    });
+    initShows();
 });
 
 $('body').on('click', '.show-selection-link', function() {
@@ -40,7 +22,7 @@ $('body').on('click', '.show-selection-link', function() {
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
         var checkout = ejs.render(template, {selectedSeats: selectedSeats});
         $('#content').html(checkout);
-        $('.breadcrumb li:eq(1)').toggleClass('active');
+        $('.breadcrumb li:eq(2)').toggleClass('active');
 
         // Braintree Setup
         $.ajax({
@@ -121,12 +103,20 @@ $('body').on('click', '.show-selection-link', function() {
             }
         });
     });
+}).on('click', '#seats-goback-button', function() {
+    selectedSeats = [];
+    getTemplate('/views/partials/showselection.ejs', function(err, template) {
+        var showSelection = ejs.render(template);
+        $('#content').html(showSelection);
+        $('.breadcrumb li:eq(1)').toggleClass('active');
+        initShows();
+    });
 }).on('click', '#checkout-goback-button', function() {
     selectedSeats = [];
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template);
         $('#content').html(seatSelection);
-        $('.breadcrumb li:eq(1)').toggleClass('active');
+        $('.breadcrumb li:eq(2)').toggleClass('active');
         initSeatCharts();
     });
 });
@@ -139,6 +129,28 @@ function getTemplate(file, callback) {
         },
         error: function(xhr, textStatus, error) {
             return callback(error);
+        }
+    });
+}
+
+function initShows() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/v1/shows',
+        dataType: 'JSON',
+        success: function(data) {
+            var html = '';
+            data.forEach(function(show) {
+                var time = new Date(show.time);
+                html += '<a href="#" class="show-selection-link"><div class="col-xs-4" id="show-' + show.id + '"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
+                    show.name + '</h3><h4>' + (time.getMonth() + 1) + '/'
+                    + time.getDate() + '/'
+                    + time.getFullYear() + ' '
+                    + ((time.getHours() + 24) % 12 || 12) + ':'
+                    + ('0' + time.getMinutes()).slice(-2)
+                    + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div></a>';
+            });
+            $('#show-selection-container').html(html);
         }
     });
 }
