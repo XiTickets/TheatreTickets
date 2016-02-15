@@ -1,10 +1,35 @@
 var selectedSeats = [];
 
 $(document).ready(function() {
-    initSeatCharts();
+    $.ajax({
+        type: 'GET',
+        url: '/api/v1/shows',
+        dataType: 'JSON',
+        success: function(data) {
+            var html = '';
+            data.forEach(function(show) {
+                var time = new Date(show.time);
+                html += '<div class="col-xs-4"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
+                    show.name + '</h3><h4>' + (time.getMonth() + 1) + '/'
+                    + time.getDate() + '/'
+                    + time.getFullYear().toString().substring(2) + ' '
+                    + ((time.getHours() + 24) % 12 || 12) + ':'
+                    + ('0' + time.getMinutes()).slice(-2)
+                    + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div>';
+            });
+            $('#content').html(html);
+        }
+    });
 });
 
-$('body').on('click', '#checkout-button', function() {
+$('body').on('click', '#select-seats-button', function() {
+    getTemplate('/views/partials/seatselection.ejs', function(err, template) {
+        var seatSelection = ejs.render(template);
+        $('#content').html(seatSelection);
+        $('.breadcrumb li:eq(1)').toggleClass('active');
+        initSeatCharts();
+    });
+}).on('click', '#checkout-button', function() {
     if (selectedSeats.length <= 0) {
         $('#checkout-button').popover('show');
         return;
@@ -28,7 +53,6 @@ $('body').on('click', '#checkout-button', function() {
                         $('#payment-form').removeClass('hidden');
                     },
                     onPaymentMethodReceived: function(obj) {
-                        var paymentForm = $('#payment-form');
                         $.ajax({
                             type: 'POST',
                             url: '/api/v1/checkout',

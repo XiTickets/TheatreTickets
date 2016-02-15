@@ -3,12 +3,36 @@ var router = express.Router();
 var fs = require('fs');
 var braintree = require('braintree');
 var mailgun = require('mailgun-js')({apiKey: 'key-d141be8ca986a254ab9e272aaffbc592', domain: 'forsyththeatre.com'});
+var mysql = require('mysql');
 
 var gateway = braintree.connect({
     environment: braintree.Environment.Sandbox,
     merchantId: 'cwznyw6q4qvn6rxk',
     publicKey: 'vry5k83ymbh6wnnx',
     privateKey: '040965d85dd2b82bb5cf3cbef251053f'
+});
+
+var connection = mysql.createConnection({
+    host: 'bhs1.hosting.jaredbates.net',
+    user: 'forsythtickets',
+    password: 'w4Qh3kseUg7UJJFp',
+    database: 'forsythtickets-qa'
+});
+
+connection.connect(function(err) {
+    if (err) {
+        console.error('Could not connect to MySQL server: ' + err.stack);
+    } else {
+        console.log('Successfully connected to MySQL server.');
+    }
+});
+
+router.get('/shows', function(req, res) {
+    connection.query('SELECT * FROM `shows`;', function(err, rows, fields) {
+        if (err) throw err;
+
+        res.json(rows);
+    });
 });
 
 router.get('/token', function(req, res) {
