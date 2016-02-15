@@ -1,12 +1,17 @@
 <div class="row">
     <div class="col-xs-offset-2 col-xs-8 well">
         <div class="col-xs-4">
-            <img src="http://www.woodstocktheatre.org/wp-content/uploads/2016/01/Into-the-Woods.jpg" width="100%">
+            <img src="<%- show.logourl %>" width="100%">
         </div>
 
         <div class="col-xs-4">
-            <h4>Into the Woods</h4>
-            <h5>Saturday, April 16, 7:00pm</h5>
+            <h4><%- show.name %></h4>
+            <h5><%- (time.getMonth() + 1) + '/'
+                + time.getDate() + '/'
+                + time.getFullYear() + ' '
+                + ((time.getHours() + 24) % 12 || 12) + ':'
+                + ('0' + time.getMinutes()).slice(-2)
+                + ((time.getHours() >= 12) ? "PM" : "AM") %></h5>
         </div>
 
         <div class="col-xs-4">

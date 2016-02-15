@@ -16,7 +16,7 @@ var pool = mysql.createPool({
     host: 'bhs1.hosting.jaredbates.net',
     user: 'forsythtickets',
     password: 'w4Qh3kseUg7UJJFp',
-    database: 'forsythtickets-qa'
+    database: 'forsythtickets_qa'
 });
 
 router.get('/shows', function(req, res) {
@@ -25,7 +25,26 @@ router.get('/shows', function(req, res) {
         connection.query('SELECT * FROM `shows`;', function(err, rows, fields) {
             connection.release();
             if (err) console.error(err);
+
             res.json(rows);
+        });
+    });
+});
+
+router.get('/shows/:id', function(req, res) {
+    pool.getConnection(function(err, connection) {
+        if (err) console.error(err);
+        connection.query('SELECT * FROM `shows` WHERE `id` = ?;', [req.params.id], function(err, rows, fields) {
+            connection.release();
+            if (err) console.error(err);
+
+            if (rows[0]) {
+                res.json(rows[0]);
+            } else {
+                res.json({
+                    error: 'Could not retrieve show.'
+                });
+            }
         });
     });
 });

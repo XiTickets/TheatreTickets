@@ -1,12 +1,10 @@
 var selectedShow = 0;
 var selectedSeats = [];
 
-$(document).ready(function() {
-    initShows();
-});
+$(document).ready(initShows);
 
 $('body').on('click', '.show-selection-link', function() {
-    selectedShow = Number($('.show-selection-link div').attr('id').replace('show-', ''));
+    selectedShow = Number($(this).find('div').attr('id').replace('show-', ''));
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template);
         $('#content').html(seatSelection);
@@ -20,86 +18,93 @@ $('body').on('click', '.show-selection-link', function() {
     }
 
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
-        var checkout = ejs.render(template, {selectedSeats: selectedSeats});
-        $('#content').html(checkout);
-        $('.breadcrumb li:eq(2)').toggleClass('active');
-
-        // Braintree Setup
         $.ajax({
             type: 'GET',
-            url: '/api/v1/token',
+            url: '/api/v1/shows/' + selectedShow,
             dataType: 'JSON',
             success: function(data) {
-                braintree.setup(data.clientToken, 'custom', {
-                    id: 'payment-form',
-                    onReady: function() {
-                        $('.spinner').remove();
-                        $('#payment-form').removeClass('hidden');
-                    },
-                    onPaymentMethodReceived: function(obj) {
-                        $.ajax({
-                            type: 'POST',
-                            url: '/api/v1/checkout',
-                            dataType: 'JSON',
-                            data: {
-                                seats: $("input[name=seats]").val(),
-                                paymentMethodNonce: obj['nonce'],
-                                firstName: $("input[name=firstName]").val(),
-                                lastName: $("input[name=lastName]").val(),
-                                email: $("input[name=email]").val(),
-                                phone: $("input[name=phone]").val(),
-                                address: $("input[name=address]").val(),
-                                city: $("input[name=city]").val(),
-                                state: $("input[name=state]").val(),
-                                zip: $("input[name=zip]").val()
+                var checkout = ejs.render(template, {selectedSeats: selectedSeats, show: data, time: new Date(data.time)});
+                $('#content').html(checkout);
+                $('.breadcrumb li:eq(2)').toggleClass('active');
+
+                // Braintree Setup
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/v1/token',
+                    dataType: 'JSON',
+                    success: function(data) {
+                        braintree.setup(data.clientToken, 'custom', {
+                            id: 'payment-form',
+                            onReady: function() {
+                                $('.spinner').remove();
+                                $('#payment-form').removeClass('hidden');
                             },
-                            success: function(data) {
-                                getTemplate('/views/partials/confirmation.ejs', function(err, template) {
-                                    var confirmation = ejs.render(template, {
-                                        confirmationNumber: data.confirmationNumber
-                                    });
-                                    $('#content').html(confirmation);
-                                    $('.breadcrumb li:eq(3)').toggleClass('active');
+                            onPaymentMethodReceived: function(obj) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/api/v1/checkout',
+                                    dataType: 'JSON',
+                                    data: {
+                                        seats: $("input[name=seats]").val(),
+                                        paymentMethodNonce: obj['nonce'],
+                                        firstName: $("input[name=firstName]").val(),
+                                        lastName: $("input[name=lastName]").val(),
+                                        email: $("input[name=email]").val(),
+                                        phone: $("input[name=phone]").val(),
+                                        address: $("input[name=address]").val(),
+                                        city: $("input[name=city]").val(),
+                                        state: $("input[name=state]").val(),
+                                        zip: $("input[name=zip]").val()
+                                    },
+                                    success: function(data) {
+                                        getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                                            var confirmation = ejs.render(template, {
+                                                confirmationNumber: data.confirmationNumber
+                                            });
+                                            $('#content').html(confirmation);
+                                            $('.breadcrumb li:eq(3)').toggleClass('active');
+                                        });
+                                    }
                                 });
+                            },
+                            hostedFields: {
+                                number: {
+                                    selector: '#card-number',
+                                    placeholder: 'Credit Card Number'
+                                },
+                                cvv: {
+                                    selector: '#cvv',
+                                    placeholder: 'CVV'
+                                },
+                                expirationDate: {
+                                    selector: '#expiration-date',
+                                    placeholder: 'MM/YY'
+                                },
+                                styles: {
+                                    'input': {
+                                        'font-family': '"Helvetica Neue", Helvetica, Arial, sans-serif',
+                                        'font-size': '14px'
+                                    },
+                                    '::-moz-placeholder': {'color': '#999'},
+                                    ':-ms-input-placeholder': {'color': '#999'},
+                                    '::-webkit-input-placeholder': {'color': '#999'}
+                                }
                             }
                         });
-                    },
-                    hostedFields: {
-                        number: {
-                            selector: '#card-number',
-                            placeholder: 'Credit Card Number'
-                        },
-                        cvv: {
-                            selector: '#cvv',
-                            placeholder: 'CVV'
-                        },
-                        expirationDate: {
-                            selector: '#expiration-date',
-                            placeholder: 'MM/YY'
-                        },
-                        styles: {
-                            'input': {
-                                'font-family': '"Helvetica Neue", Helvetica, Arial, sans-serif',
-                                'font-size': '14px'
-                            },
-                            '::-moz-placeholder': {'color': '#999'},
-                            ':-ms-input-placeholder': {'color': '#999'},
-                            '::-webkit-input-placeholder': {'color': '#999'}
-                        }
                     }
                 });
-            }
-        });
 
-        $('#secure-popover-text').popover({
-            trigger: 'click hover focus',
-            content: 'All credit card information is processed by our external provider, <a href="https://www.braintreepayments.com/" target="_blank">BrainTree</a> (a PayPal company), and fully encrypted every step of the way.',
-            html: true,
-            placement: 'right',
-            container: 'body',
-            delay: {
-                "show": 100,
-                "hide": 600
+                $('#secure-popover-text').popover({
+                    trigger: 'click hover focus',
+                    content: 'All credit card information is processed by our external provider, <a href="https://www.braintreepayments.com/" target="_blank">BrainTree</a> (a PayPal company), and fully encrypted every step of the way.',
+                    html: true,
+                    placement: 'right',
+                    container: 'body',
+                    delay: {
+                        "show": 100,
+                        "hide": 600
+                    }
+                });
             }
         });
     });
