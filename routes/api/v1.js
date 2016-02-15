@@ -12,32 +12,28 @@ var gateway = braintree.connect({
     privateKey: '040965d85dd2b82bb5cf3cbef251053f'
 });
 
-var connection = mysql.createConnection({
+var pool = mysql.createPool({
     host: 'bhs1.hosting.jaredbates.net',
     user: 'forsythtickets',
     password: 'w4Qh3kseUg7UJJFp',
     database: 'forsythtickets-qa'
 });
 
-connection.connect(function(err) {
-    if (err) {
-        console.error('Could not connect to MySQL server: ' + err.stack);
-    } else {
-        console.log('Successfully connected to MySQL server.');
-    }
-});
-
 router.get('/shows', function(req, res) {
-    connection.query('SELECT * FROM `shows`;', function(err, rows, fields) {
-        if (err) throw err;
-
-        res.json(rows);
+    pool.getConnection(function(err, connection) {
+        if (err) console.error(err);
+        connection.query('SELECT * FROM `shows`;', function(err, rows, fields) {
+            connection.release();
+            if (err) console.error(err);
+            res.json(rows);
+        });
     });
 });
 
 router.get('/token', function(req, res) {
     gateway.clientToken.generate({}, function(err, response) {
-        if (err) throw err;
+        if (err) console.error(err);
+
         res.json({
             "clientToken": response.clientToken
         });
@@ -67,7 +63,7 @@ router.post('/checkout', function(req, res) {
             submitForSettlement: true
         }
     }, function(err, result) {
-        if (err) throw err;
+        if (err) console.error(err);
 
         if (result.success) {
             var transaction = result.transaction;
