@@ -1,3 +1,4 @@
+var selectedShow = 0;
 var selectedSeats = [];
 
 $(document).ready(function() {
@@ -9,20 +10,21 @@ $(document).ready(function() {
             var html = '';
             data.forEach(function(show) {
                 var time = new Date(show.time);
-                html += '<div class="col-xs-4"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
+                html += '<a href="#" class="show-selection-link"><div class="col-xs-4" id="show-' + show.id + '"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
                     show.name + '</h3><h4>' + (time.getMonth() + 1) + '/'
                     + time.getDate() + '/'
-                    + time.getFullYear().toString().substring(2) + ' '
+                    + time.getFullYear() + ' '
                     + ((time.getHours() + 24) % 12 || 12) + ':'
                     + ('0' + time.getMinutes()).slice(-2)
-                    + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div>';
+                    + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div></a>';
             });
-            $('#content').html(html);
+            $('#show-selection-container').html(html);
         }
     });
 });
 
-$('body').on('click', '#select-seats-button', function() {
+$('body').on('click', '.show-selection-link', function() {
+    selectedShow = Number($('.show-selection-link div').attr('id').replace('show-', ''));
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template);
         $('#content').html(seatSelection);
