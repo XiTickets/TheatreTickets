@@ -46,6 +46,7 @@ $('body').on('click', '.show-selection-link', function() {
                                     dataType: 'JSON',
                                     data: {
                                         seats: $("input[name=seats]").val(),
+                                        show: $("input[name=show]").val(),
                                         paymentMethodNonce: obj['nonce'],
                                         firstName: $("input[name=firstName]").val(),
                                         lastName: $("input[name=lastName]").val(),

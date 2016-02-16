@@ -60,8 +60,9 @@ router.get('/token', function(req, res) {
 });
 
 router.post('/checkout', function(req, res) {
+    var seats = req.body.seats.split(',');
     gateway.transaction.sale({
-        amount: req.body.seats.split(',').length * 5,
+        amount: seats.length * 5,
         paymentMethodNonce: req.body.paymentMethodNonce,
         customer: {
             firstName: req.body.firstName,
@@ -86,6 +87,17 @@ router.post('/checkout', function(req, res) {
 
         if (result.success) {
             var transaction = result.transaction;
+
+            pool.getConnection(function(err, connection) {
+                if (err) console.error(err);
+
+                seats.forEach(function(seat) {
+                    var insert = {transactionid: transaction.id, showid: req.body.show, seat: seat};
+                    connection.query('INSERT INTO `purchased_seats` SET ?;', insert);
+                });
+
+                connection.release();
+            });
 
             res.json({
                 "confirmationNumber": transaction.id,
