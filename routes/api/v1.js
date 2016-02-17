@@ -49,6 +49,30 @@ router.get('/shows/:id', function(req, res) {
     });
 });
 
+router.get('/shows/:id/purchased_seats', function(req, res) {
+    pool.getConnection(function(err, connection) {
+        if (err) console.error(err);
+        connection.query('SELECT * FROM `purchased_seats` WHERE `showid` = ?;', [req.params.id], function(err, rows, fields) {
+            connection.release();
+            if (err) console.error(err);
+
+            if (rows[0]) {
+                var purchasedSeatIDs = [];
+
+                rows.forEach(function(purchasedSeats) {
+                    purchasedSeatIDs.push(purchasedSeats.seat);
+                });
+
+                res.json(purchasedSeatIDs);
+            } else {
+                res.json({
+                    error: 'Could not retrieve show.'
+                });
+            }
+        });
+    });
+});
+
 router.get('/token', function(req, res) {
     gateway.clientToken.generate({}, function(err, response) {
         if (err) console.error(err);

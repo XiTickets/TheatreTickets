@@ -162,103 +162,111 @@ function initShows() {
 }
 
 function initSeatCharts() {
-    $('#leftSeatMap').seatCharts({
-        map: [
-            '__aaaaaaaaaaaaaaaaa',
-            'aaaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '_aaaaaaaaaaaaaaaaaa',
-            '__aaaaaaaaaaaaaaaaa'
-        ],
-        naming: {
-            columns: ['37', '35', '33', '31', '29', '27', '25', '23', '21', '19', '17', '15', '13', '11', '9', '7', '5', '3', '1'],
-            rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
-        },
-        seats: {
-            a: {
-                price: 5.00,
-                classes: 'general'
-            }
-        },
-        click: function () {
-            if (this.status() == 'available') {
-                // Add to array
-                selectedSeats.push(this.node()[0].id);
-                // Update counter
-                $('#seat-number').text(selectedSeats.length);
-                // Update status
-                return 'selected';
-            } else if (this.status() == 'selected') {
-                // Remove from array
-                selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
-                // Update counter
-                $('#seat-number').text(selectedSeats.length);
-                // Update status
-                return 'available';
-            } else if (this.status() == 'unavailable') {
-                return 'unavailable';
-            } else {
-                return this.style();
-            }
-        }
-    });
+    $.ajax({
+        type: 'GET',
+        url: '/api/v1/shows/' + selectedShow + '/purchased_seats',
+        dataType: 'JSON',
+        success: function(seats) {
+            var leftSeatMap = $('#leftSeatMap').seatCharts({
+                map: [
+                    '__aaaaaaaaaaaaaaaaa',
+                    'aaaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa',
+                    '__aaaaaaaaaaaaaaaaa'
+                ],
+                naming: {
+                    columns: ['37', '35', '33', '31', '29', '27', '25', '23', '21', '19', '17', '15', '13', '11', '9', '7', '5', '3', '1'],
+                    rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
+                },
+                seats: {
+                    a: {
+                        classes: 'general'
+                    }
+                },
+                click: function () {
+                    if (this.status() == 'available') {
+                        // Add to array
+                        selectedSeats.push(this.node()[0].id);
+                        // Update counter
+                        $('#seat-number').text(selectedSeats.length);
+                        // Update status
+                        return 'selected';
+                    } else if (this.status() == 'selected') {
+                        // Remove from array
+                        selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
+                        // Update counter
+                        $('#seat-number').text(selectedSeats.length);
+                        // Update status
+                        return 'available';
+                    } else if (this.status() == 'unavailable') {
+                        return 'unavailable';
+                    } else {
+                        return this.style();
+                    }
+                }
+            });
 
-    $('#rightSeatMap').seatCharts({
-        map: [
-            'aaaaaaaaaaaaaaaaa__',
-            'aaaaaaaaaaaaaaaaaaa',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaaa_',
-            'aaaaaaaaaaaaaaaaa__'
-        ],
-        naming: {
-            columns: ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38'],
-            rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
-        },
-        seats: {
-            a: {
-                price: 5.00,
-                classes: 'general'
-            }
-        },
-        click: function () {
-            if (this.status() == 'available') {
-                // Add to array
-                selectedSeats.push(this.node()[0].id);
-                // Update counter
-                $('#seat-number').text(selectedSeats.length);
-                // Update status
-                return 'selected';
-            } else if (this.status() == 'selected') {
-                // Remove from array
-                selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
-                // Update counter
-                $('#seat-number').text(selectedSeats.length);
-                // Update status
-                return 'available';
-            } else if (this.status() == 'unavailable') {
-                return 'unavailable';
-            } else {
-                return this.style();
-            }
+            var rightSeatMap = $('#rightSeatMap').seatCharts({
+                map: [
+                    'aaaaaaaaaaaaaaaaa__',
+                    'aaaaaaaaaaaaaaaaaaa',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaaa_',
+                    'aaaaaaaaaaaaaaaaa__'
+                ],
+                naming: {
+                    columns: ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38'],
+                    rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
+                },
+                seats: {
+                    a: {
+                        classes: 'general'
+                    }
+                },
+                click: function () {
+                    if (this.status() == 'available') {
+                        // Add to array
+                        selectedSeats.push(this.node()[0].id);
+                        // Update counter
+                        $('#seat-number').text(selectedSeats.length);
+                        // Update status
+                        return 'selected';
+                    } else if (this.status() == 'selected') {
+                        // Remove from array
+                        selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
+                        // Update counter
+                        $('#seat-number').text(selectedSeats.length);
+                        // Update status
+                        return 'available';
+                    } else if (this.status() == 'unavailable') {
+                        return 'unavailable';
+                    } else {
+                        return this.style();
+                    }
+                }
+            });
+
+            leftSeatMap.get(seats).status('unavailable');
+            rightSeatMap.get(seats).status('unavailable');
         }
     });
 }
