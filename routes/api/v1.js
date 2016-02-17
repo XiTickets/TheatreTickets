@@ -66,7 +66,7 @@ router.get('/shows/:id/purchased_seats', function(req, res) {
                 res.json(purchasedSeatIDs);
             } else {
                 res.json({
-                    error: 'Could not retrieve show.'
+                    error: 'Could not retrieve purchased seats.'
                 });
             }
         });

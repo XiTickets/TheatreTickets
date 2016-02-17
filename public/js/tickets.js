@@ -106,6 +106,10 @@ $('body').on('click', '.show-selection-link', function() {
                         "hide": 600
                     }
                 });
+
+                $('#adultTickets').on('change', function() {
+                    $('#studentTickets').text();
+                });
             }
         });
     });
