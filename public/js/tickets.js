@@ -108,7 +108,11 @@ $('body').on('click', '.show-selection-link', function() {
                 });
 
                 $('#adultTickets').on('change', function() {
-                    $('#studentTickets').text();
+                    $('#studentTickets').val(selectedSeats.length - $('#adultTickets').val());
+                });
+
+                $('#studentTickets').on('change', function() {
+                    $('#adultTickets').val(selectedSeats.length - $('#studentTickets').val());
                 });
             }
         });
@@ -173,72 +177,23 @@ function initSeatCharts() {
         success: function(seats) {
             var leftSeatMap = $('#leftSeatMap').seatCharts({
                 map: [
-                    '__aaaaaaaaaaaaaaaaa',
-                    'aaaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '_aaaaaaaaaaaaaaaaaa',
-                    '__aaaaaaaaaaaaaaaaa'
+                    '__aaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaa__',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaaa_',
+                    '__aaaaaaaaaaaaaaaaa___aaaaaaaaaaaaaaaaa__'
                 ],
                 naming: {
-                    columns: ['37', '35', '33', '31', '29', '27', '25', '23', '21', '19', '17', '15', '13', '11', '9', '7', '5', '3', '1'],
-                    rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
-                },
-                seats: {
-                    a: {
-                        classes: 'general'
-                    }
-                },
-                click: function () {
-                    if (this.status() == 'available') {
-                        // Add to array
-                        selectedSeats.push(this.node()[0].id);
-                        // Update counter
-                        $('#seat-number').text(selectedSeats.length);
-                        // Update status
-                        return 'selected';
-                    } else if (this.status() == 'selected') {
-                        // Remove from array
-                        selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
-                        // Update counter
-                        $('#seat-number').text(selectedSeats.length);
-                        // Update status
-                        return 'available';
-                    } else if (this.status() == 'unavailable') {
-                        return 'unavailable';
-                    } else {
-                        return this.style();
-                    }
-                }
-            });
-
-            var rightSeatMap = $('#rightSeatMap').seatCharts({
-                map: [
-                    'aaaaaaaaaaaaaaaaa__',
-                    'aaaaaaaaaaaaaaaaaaa',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaa__'
-                ],
-                naming: {
-                    columns: ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38'],
+                    columns: ['', '35', '33', '31', '29', '27', '25', '23', '21', '19', '17', '15', '13', '11', '9', '7', '5', '3', '1', '', '', '', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38'],
                     rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
                 },
                 seats: {
@@ -270,7 +225,6 @@ function initSeatCharts() {
             });
 
             leftSeatMap.get(seats).status('unavailable');
-            rightSeatMap.get(seats).status('unavailable');
         }
     });
 }

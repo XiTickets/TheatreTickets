@@ -26,10 +26,15 @@ body {
     overflow: hidden;
 }
 
+div.seatCharts-row {
+    height: 35px;
+}
+
 div.seatCharts-cell {
-    height: 1.6em;
-    width: 1.6em;
-    line-height: 1.6em;
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 1.5em;
+    margin: 3px;
 }
 
 div.seatCharts-seat.selected {
