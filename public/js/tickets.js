@@ -128,7 +128,7 @@ $('body').on('click', '.show-selection-link', function() {
 }).on('click', '#checkout-goback-button', function() {
     selectedSeats = [];
     getTemplate('/views/partials/seatselection.ejs', function(err, template) {
-        var seatSelection = ejs.render(template, {show: selectedShow, time: new Date(data.time)});
+        var seatSelection = ejs.render(template, {show: selectedShow, time: new Date(selectedShow.time)});
         $('#content').html(seatSelection);
         $('.breadcrumb li:eq(2)').toggleClass('active');
         initSeatCharts();
