@@ -202,21 +202,25 @@ function initSeatCharts() {
                     }
                 },
                 click: function() {
-                    if (this.status() == 'available') {
+                    if (selectedSeats.length === 0) {
+                        return this.style();
+                    }
+
+                    if (this.status() === 'available') {
                         // Add to array
                         selectedSeats.push(this.node()[0].id);
                         // Update counter
                         $('#seat-number').text(selectedSeats.length);
                         // Update status
                         return 'selected';
-                    } else if (this.status() == 'selected') {
+                    } else if (this.status() === 'selected') {
                         // Remove from array
                         selectedSeats.splice(selectedSeats.indexOf(this.node()[0].id), 1);
                         // Update counter
                         $('#seat-number').text(selectedSeats.length);
                         // Update status
                         return 'available';
-                    } else if (this.status() == 'unavailable') {
+                    } else if (this.status() === 'unavailable') {
                         return 'unavailable';
                     } else {
                         return this.style();
