@@ -15,16 +15,6 @@
         </div>
 
         <div class="col-xs-4">
-            <form>
-                <div class="form-group">
-                    <label for="adultTickets">Adults</label>
-                    <input type="number" class="form-control" id="adultTickets" value="<%- selectedSeats.length %>" min="0" max="<%- selectedSeats.length %>" required>
-                </div>
-                <div class="form-group">
-                    <label for="studentTickets">Students</label>
-                    <input type="number" class="form-control" id="studentTickets" value="0" min="0" max="<%- selectedSeats.length %>" required>
-                </div>
-            </form>
             <p>Total Number of Tickets: <b><%- selectedSeats.length %></b></p>
             <p>Total Price: <b>$<%- selectedSeats.length * 5 %></b></p>
         </div>

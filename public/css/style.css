@@ -21,19 +21,24 @@ body {
 
 /* Seating Chart */
 
-#seat-maps {
-    min-width: 1150px;
+#seatMap {
+    min-width: 1050px;
     overflow: hidden;
+    margin-bottom: 1em;
 }
 
 div.seatCharts-row {
-    height: 35px;
+    height: 36px;
+}
+
+div.seatCharts-space {
+    background-color: transparent;
 }
 
 div.seatCharts-cell {
-    height: 1.5em;
-    width: 1.5em;
-    line-height: 1.5em;
+    height: 1.9em;
+    width: 1.4em;
+    line-height: 1.9em;
     margin: 3px;
 }
 
@@ -46,7 +51,7 @@ div.seatCharts-seat.selected {
 }
 
 #stage-box {
-    width: 1150px;
+    width: 100%;
     height: 80px;
     border: 15px solid;
     border-top: 10px;

@@ -1,9 +1,33 @@
-<div class="row" id="stage-box">
-    <h1>Stage</h1>
-</div>
+<div class="row">
+    <div class="col-xs-2">
+        <img src="<%- show.logourl %>" width="100%">
+        <h3><%- show.name %></h3>
+        <h4><%- (time.getMonth() + 1) + '/'
+            + time.getDate() + '/'
+            + time.getFullYear() + ' '
+            + ((time.getHours() + 24) % 12 || 12) + ':'
+            + ('0' + time.getMinutes()).slice(-2)
+            + ((time.getHours() >= 12) ? "PM" : "AM") %></h4>
 
-<div class="row" id="seat-maps">
-    <div id="leftSeatMap"></div>
+        <form>
+            <div class="form-group">
+                <label for="adultTickets">Number of Adults</label>
+                <input type="number" class="form-control" id="adultTickets" value="<%- selectedSeats.length %>" min="0" max="<%- selectedSeats.length %>" required>
+            </div>
+            <div class="form-group">
+                <label for="studentTickets">Number of Students</label>
+                <input type="number" class="form-control" id="studentTickets" value="0" min="0" max="<%- selectedSeats.length %>" required>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-xs-10 well">
+        <div id="stage-box" class="row">
+            <h1>Stage</h1>
+        </div>
+
+        <div class="row" id="seatMap"></div>
+    </div>
 </div>
 
 <div class="row">
@@ -16,6 +40,8 @@
     </div>
 
     <div class="col-xs-1">
-        <button class="btn btn-primary" id="checkout-button" data-content="Please select your seats first." data-placement="top">Checkout</button>
+        <button class="btn btn-primary" id="checkout-button" data-content="Please select your seats first."
+                data-placement="top">Checkout
+        </button>
     </div>
 </div>
