@@ -3,17 +3,17 @@ var selectedSeats = [];
 
 $(document).ready(initShows);
 
-$('body').on('click', '.show-selection-link', function() {
+$('body').on('click', '.show-selection-link', function () {
     var selectedShowId = Number($(this).find('div').attr('id').replace('show-', ''));
 
     $.ajax({
         type: 'GET',
         url: '/api/v1/shows/' + selectedShowId,
         dataType: 'JSON',
-        success: function(data) {
+        success: function (data) {
             selectedShow = data;
 
-            getTemplate('/views/partials/seatselection.ejs', function(err, template) {
+            getTemplate('/views/partials/seatselection.ejs', function (err, template) {
                 var seatSelection = ejs.render(template, {show: selectedShow, time: new Date(data.time)});
                 $('#content').html(seatSelection);
                 $('.breadcrumb li:eq(1)').toggleClass('active');
@@ -21,13 +21,30 @@ $('body').on('click', '.show-selection-link', function() {
             });
         }
     });
-}).on('click', '#checkout-button', function() {
+}).on('click', '#checkout-button', function () {
+    $('#checkout-button').popover({
+        trigger: 'manual',
+        placement: 'left',
+        container: 'body'
+    });
+
     if (selectedSeats.length <= 0) {
-        $('#checkout-button').popover('show');
+        $(this).data('bs.popover').options.content = 'Please select your seats first.';
+        $(this).popover('show');
+        setTimeout(function () {
+            $('#checkout-button').popover('hide');
+        }, 3000);
+        return;
+    } else if (selectedSeats.length > parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val())) {
+        $(this).data('bs.popover').options.content = 'Please ensure that the number of seats selected matches the number of people in your group.';
+        $(this).popover('show');
+        setTimeout(function () {
+            $('#checkout-button').popover('hide');
+        }, 3000);
         return;
     }
 
-    getTemplate('/views/partials/checkout.ejs', function(err, template) {
+    getTemplate('/views/partials/checkout.ejs', function (err, template) {
         var checkout = ejs.render(template, {
             selectedSeats: selectedSeats,
             show: selectedShow,
@@ -41,14 +58,14 @@ $('body').on('click', '.show-selection-link', function() {
             type: 'GET',
             url: '/api/v1/token',
             dataType: 'JSON',
-            success: function(data) {
+            success: function (data) {
                 braintree.setup(data.clientToken, 'custom', {
                     id: 'payment-form',
-                    onReady: function() {
+                    onReady: function () {
                         $('.spinner').remove();
                         $('#payment-form').removeClass('hidden');
                     },
-                    onPaymentMethodReceived: function(obj) {
+                    onPaymentMethodReceived: function (obj) {
                         $.ajax({
                             type: 'POST',
                             url: '/api/v1/checkout',
@@ -66,8 +83,8 @@ $('body').on('click', '.show-selection-link', function() {
                                 state: $("input[name=state]").val(),
                                 zip: $("input[name=zip]").val()
                             },
-                            success: function(data) {
-                                getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                            success: function (data) {
+                                getTemplate('/views/partials/confirmation.ejs', function (err, template) {
                                     var confirmation = ejs.render(template, {
                                         confirmationNumber: data.confirmationNumber
                                     });
@@ -116,18 +133,18 @@ $('body').on('click', '.show-selection-link', function() {
             }
         });
     });
-}).on('click', '#seats-goback-button', function() {
+}).on('click', '#seats-goback-button', function () {
     selectedSeats = [];
     selectedShow = null;
-    getTemplate('/views/partials/showselection.ejs', function(err, template) {
+    getTemplate('/views/partials/showselection.ejs', function (err, template) {
         var showSelection = ejs.render(template);
         $('#content').html(showSelection);
         $('.breadcrumb li:eq(1)').toggleClass('active');
         initShows();
     });
-}).on('click', '#checkout-goback-button', function() {
+}).on('click', '#checkout-goback-button', function () {
     selectedSeats = [];
-    getTemplate('/views/partials/seatselection.ejs', function(err, template) {
+    getTemplate('/views/partials/seatselection.ejs', function (err, template) {
         var seatSelection = ejs.render(template, {show: selectedShow, time: new Date(selectedShow.time)});
         $('#content').html(seatSelection);
         $('.breadcrumb li:eq(2)').toggleClass('active');
@@ -138,10 +155,10 @@ $('body').on('click', '.show-selection-link', function() {
 function getTemplate(file, callback) {
     $.ajax(file, {
         type: 'GET',
-        success: function(data, textStatus, xhr) {
+        success: function (data, textStatus, xhr) {
             return callback(null, data);
         },
-        error: function(xhr, textStatus, error) {
+        error: function (xhr, textStatus, error) {
             return callback(error);
         }
     });
@@ -152,9 +169,9 @@ function initShows() {
         type: 'GET',
         url: '/api/v1/shows',
         dataType: 'JSON',
-        success: function(data) {
+        success: function (data) {
             var html = '';
-            data.forEach(function(show) {
+            data.forEach(function (show) {
                 var time = new Date(show.time);
                 html += '<a href="#" class="show-selection-link"><div class="col-xs-4" id="show-' + show.id + '"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
                     show.name + '</h3><h4>' + (time.getMonth() + 1) + '/'
@@ -174,26 +191,26 @@ function initSeatCharts() {
         type: 'GET',
         url: '/api/v1/shows/' + selectedShow.id + '/purchased_seats',
         dataType: 'JSON',
-        success: function(seats) {
+        success: function (seats) {
             var seatMap = $('#seatMap').seatCharts({
                 map: [
-                    '_aaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaa__',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaaa',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    'aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
-                    '_aaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaa__'
+                    '__aaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaa__',
+                    'aaaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaaa',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '_aaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaa_',
+                    '__aaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaa__'
                 ],
                 naming: {
-                    columns: ['35', '33', '31', '29', '27', '25', '23', '21', '19', '17', '15', '13', '11', '9', '7', '5', '3', '1', '', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38'],
+                    columns: ['37', '35', '33', '31', '29', '27', '25', '23', '21', '19', '17', '15', '13', '11', '9', '7', '5', '3', '1', '', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30', '32', '34', '36', '38'],
                     rows: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
                 },
                 seats: {
@@ -201,12 +218,12 @@ function initSeatCharts() {
                         classes: 'general'
                     }
                 },
-                click: function() {
-                    if (selectedSeats.length === 0) {
-                        return this.style();
-                    }
-
+                click: function () {
                     if (this.status() === 'available') {
+                        if (selectedSeats.length >= (parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val()))) {
+                            return this.style();
+                        }
+
                         // Add to array
                         selectedSeats.push(this.node()[0].id);
                         // Update counter
