@@ -1,19 +1,23 @@
 var selectedShow;
 var selectedSeats = [];
+var adultSeatsNumber = 0;
+var studentSeatsNumber = 0;
 
 $(document).ready(initShows);
 
-$('body').on('click', '.show-selection-link', function () {
+$('body').on('click', '.show-selection-link', function(e) {
+    e.preventDefault();
+
     var selectedShowId = Number($(this).find('div').attr('id').replace('show-', ''));
 
     $.ajax({
         type: 'GET',
         url: '/api/v1/shows/' + selectedShowId,
         dataType: 'JSON',
-        success: function (data) {
+        success: function(data) {
             selectedShow = data;
 
-            getTemplate('/views/partials/seatselection.ejs', function (err, template) {
+            getTemplate('/views/partials/seatselection.ejs', function(err, template) {
                 var seatSelection = ejs.render(template, {show: selectedShow, time: new Date(data.time)});
                 $('#content').html(seatSelection);
                 $('.breadcrumb li:eq(1)').toggleClass('active');
@@ -21,7 +25,9 @@ $('body').on('click', '.show-selection-link', function () {
             });
         }
     });
-}).on('click', '#checkout-button', function () {
+}).on('click', '#checkout-button', function(e) {
+    e.preventDefault();
+
     $('#checkout-button').popover({
         trigger: 'manual',
         placement: 'left',
@@ -31,20 +37,20 @@ $('body').on('click', '.show-selection-link', function () {
     if (selectedSeats.length <= 0) {
         $(this).data('bs.popover').options.content = 'Please select your seats first.';
         $(this).popover('show');
-        setTimeout(function () {
+        setTimeout(function() {
             $('#checkout-button').popover('hide');
         }, 3000);
         return;
-    } else if (selectedSeats.length > parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val())) {
+    } else if (selectedSeats.length !== parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val())) {
         $(this).data('bs.popover').options.content = 'Please ensure that the number of seats selected matches the number of people in your group.';
         $(this).popover('show');
-        setTimeout(function () {
+        setTimeout(function() {
             $('#checkout-button').popover('hide');
         }, 3000);
         return;
     }
 
-    getTemplate('/views/partials/checkout.ejs', function (err, template) {
+    getTemplate('/views/partials/checkout.ejs', function(err, template) {
         var checkout = ejs.render(template, {
             selectedSeats: selectedSeats,
             show: selectedShow,
@@ -58,14 +64,14 @@ $('body').on('click', '.show-selection-link', function () {
             type: 'GET',
             url: '/api/v1/token',
             dataType: 'JSON',
-            success: function (data) {
+            success: function(data) {
                 braintree.setup(data.clientToken, 'custom', {
                     id: 'payment-form',
-                    onReady: function () {
+                    onReady: function() {
                         $('.spinner').remove();
                         $('#payment-form').removeClass('hidden');
                     },
-                    onPaymentMethodReceived: function (obj) {
+                    onPaymentMethodReceived: function(obj) {
                         $.ajax({
                             type: 'POST',
                             url: '/api/v1/checkout',
@@ -83,8 +89,8 @@ $('body').on('click', '.show-selection-link', function () {
                                 state: $("input[name=state]").val(),
                                 zip: $("input[name=zip]").val()
                             },
-                            success: function (data) {
-                                getTemplate('/views/partials/confirmation.ejs', function (err, template) {
+                            success: function(data) {
+                                getTemplate('/views/partials/confirmation.ejs', function(err, template) {
                                     var confirmation = ejs.render(template, {
                                         confirmationNumber: data.confirmationNumber
                                     });
@@ -122,7 +128,7 @@ $('body').on('click', '.show-selection-link', function () {
         });
 
         $('#secure-popover-text').popover({
-            trigger: 'click hover focus',
+            trigger: 'hover focus',
             content: 'All credit card information is processed by our external provider, <a href="https://www.braintreepayments.com/" target="_blank">BrainTree</a> (a PayPal company), and fully encrypted every step of the way.',
             html: true,
             placement: 'right',
@@ -133,32 +139,40 @@ $('body').on('click', '.show-selection-link', function () {
             }
         });
     });
-}).on('click', '#seats-goback-button', function () {
+}).on('click', '#seats-goback-button', function(e) {
+    e.preventDefault();
+
     selectedSeats = [];
     selectedShow = null;
-    getTemplate('/views/partials/showselection.ejs', function (err, template) {
+
+    getTemplate('/views/partials/showselection.ejs', function(err, template) {
         var showSelection = ejs.render(template);
         $('#content').html(showSelection);
         $('.breadcrumb li:eq(1)').toggleClass('active');
         initShows();
     });
-}).on('click', '#checkout-goback-button', function () {
+}).on('click', '#checkout-goback-button', function(e) {
+    e.preventDefault();
+
     selectedSeats = [];
-    getTemplate('/views/partials/seatselection.ejs', function (err, template) {
+
+    getTemplate('/views/partials/seatselection.ejs', function(err, template) {
         var seatSelection = ejs.render(template, {show: selectedShow, time: new Date(selectedShow.time)});
         $('#content').html(seatSelection);
         $('.breadcrumb li:eq(2)').toggleClass('active');
         initSeatCharts();
     });
+}).on('click', '#student-info-button', function(e) {
+    e.preventDefault();
 });
 
 function getTemplate(file, callback) {
     $.ajax(file, {
         type: 'GET',
-        success: function (data, textStatus, xhr) {
+        success: function(data, textStatus, xhr) {
             return callback(null, data);
         },
-        error: function (xhr, textStatus, error) {
+        error: function(xhr, textStatus, error) {
             return callback(error);
         }
     });
@@ -169,9 +183,14 @@ function initShows() {
         type: 'GET',
         url: '/api/v1/shows',
         dataType: 'JSON',
-        success: function (data) {
+        success: function(data) {
+            var showSelectionContainer = $('#show-selection-container');
+
+            $('.spinner').remove();
+            showSelectionContainer.removeClass('hidden');
+
             var html = '';
-            data.forEach(function (show) {
+            data.forEach(function(show) {
                 var time = new Date(show.time);
                 html += '<a href="#" class="show-selection-link"><div class="col-xs-4" id="show-' + show.id + '"><div class="well"><img src="' + show.logourl + '" width="100%"><h3>' +
                     show.name + '</h3><h4>' + (time.getMonth() + 1) + '/'
@@ -181,18 +200,34 @@ function initShows() {
                     + ('0' + time.getMinutes()).slice(-2)
                     + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div></a>';
             });
-            $('#show-selection-container').html(html);
+            showSelectionContainer.html(html);
         }
     });
 }
 
 function initSeatCharts() {
+    $('#student-info-button').popover({
+        trigger: 'hover focus',
+        content: 'Anyone currently enrolled in school is a student. Children ages 5 and under are free.',
+        placement: 'right',
+        container: 'body',
+        delay: {
+            "show": 100,
+            "hide": 600
+        }
+    });
+
     $.ajax({
         type: 'GET',
         url: '/api/v1/shows/' + selectedShow.id + '/purchased_seats',
         dataType: 'JSON',
-        success: function (seats) {
-            var seatMap = $('#seatMap').seatCharts({
+        success: function(seats) {
+            var seatMap = $('#seat-map');
+
+            $('.spinner').remove();
+            seatMap.removeClass('hidden');
+
+            var seatChart = seatMap.seatCharts({
                 map: [
                     '__aaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaa__',
                     'aaaaaaaaaaaaaaaaaaa_aaaaaaaaaaaaaaaaaaa',
@@ -218,12 +253,8 @@ function initSeatCharts() {
                         classes: 'general'
                     }
                 },
-                click: function () {
-                    if (this.status() === 'available') {
-                        if (selectedSeats.length >= (parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val()))) {
-                            return this.style();
-                        }
-
+                click: function() {
+                    if (this.status() === 'available' && selectedSeats.length < (parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val()))) {
                         // Add to array
                         selectedSeats.push(this.node()[0].id);
                         // Update counter
@@ -245,7 +276,7 @@ function initSeatCharts() {
                 }
             });
 
-            seatMap.get(seats).status('unavailable');
+            seatChart.get(seats).status('unavailable');
         }
     });
 }

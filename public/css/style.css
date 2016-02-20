@@ -21,7 +21,7 @@ body {
 
 /* Seating Chart */
 
-#seatMap {
+#seat-map {
     min-width: 1050px;
     overflow: hidden;
     margin-bottom: 1em;
