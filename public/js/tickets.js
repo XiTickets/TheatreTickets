@@ -1,7 +1,7 @@
 var selectedShow;
 var selectedSeats = [];
-var adultSeatsNumber = 0;
-var studentSeatsNumber = 0;
+var adultSeatsAmount = 0;
+var studentSeatsAmount = 0;
 
 $(document).ready(initShows);
 
@@ -34,6 +34,9 @@ $('body').on('click', '.show-selection-link', function(e) {
         container: 'body'
     });
 
+    adultSeatsAmount = parseInt($('#adultTickets').val());
+    studentSeatsAmount = parseInt($('#studentTickets').val());
+
     if (selectedSeats.length <= 0) {
         $(this).data('bs.popover').options.content = 'Please select your seats first.';
         $(this).popover('show');
@@ -41,7 +44,7 @@ $('body').on('click', '.show-selection-link', function(e) {
             $('#checkout-button').popover('hide');
         }, 3000);
         return;
-    } else if (selectedSeats.length !== parseInt($('#adultTickets').val()) + parseInt($('#studentTickets').val())) {
+    } else if (selectedSeats.length !== adultSeatsAmount + studentSeatsAmount) {
         $(this).data('bs.popover').options.content = 'Please ensure that the number of seats selected matches the number of people in your group.';
         $(this).popover('show');
         setTimeout(function() {
