@@ -57,7 +57,10 @@ $('body').on('click', '.show-selection-link', function(e) {
         var checkout = ejs.render(template, {
             selectedSeats: selectedSeats,
             show: selectedShow,
-            time: new Date(selectedShow.time)
+            time: new Date(selectedShow.time),
+            adultSeatsAmount: adultSeatsAmount,
+            studentSeatsAmount: studentSeatsAmount,
+            totalPrice: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice)
         });
         $('#content').html(checkout);
         $('.breadcrumb li:eq(2)').toggleClass('active');
@@ -80,22 +83,26 @@ $('body').on('click', '.show-selection-link', function(e) {
                             url: '/api/v1/checkout',
                             dataType: 'JSON',
                             data: {
-                                seats: $("input[name=seats]").val(),
-                                show: $("input[name=show]").val(),
+                                seats: $('input[name=seats]').val(),
+                                price: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice),
+                                showid: $('input[name=showid]').val(),
+                                showname: $('input[name=showname]').val(),
                                 paymentMethodNonce: obj['nonce'],
-                                firstName: $("input[name=firstName]").val(),
-                                lastName: $("input[name=lastName]").val(),
-                                email: $("input[name=email]").val(),
-                                phone: $("input[name=phone]").val(),
-                                address: $("input[name=address]").val(),
-                                city: $("input[name=city]").val(),
-                                state: $("input[name=state]").val(),
-                                zip: $("input[name=zip]").val()
+                                firstName: $('input[name=firstName]').val(),
+                                lastName: $('input[name=lastName]').val(),
+                                email: $('input[name=email]').val(),
+                                phone: $('input[name=phone]').val(),
+                                address: $('input[name=address]').val(),
+                                city: $('input[name=city]').val(),
+                                state: $('input[name=state]').val(),
+                                zip: $('input[name=zip]').val()
                             },
                             success: function(data) {
                                 getTemplate('/views/partials/confirmation.ejs', function(err, template) {
                                     var confirmation = ejs.render(template, {
-                                        confirmationNumber: data.confirmationNumber
+                                        confirmationNumber: data.confirmationNumber,
+                                        show: selectedShow,
+                                        time: new Date(selectedShow.time)
                                     });
                                     $('#content').html(confirmation);
                                     $('.breadcrumb li:eq(3)').toggleClass('active');
@@ -137,8 +144,8 @@ $('body').on('click', '.show-selection-link', function(e) {
             placement: 'right',
             container: 'body',
             delay: {
-                "show": 100,
-                "hide": 600
+                'show': 100,
+                'hide': 600
             }
         });
     });
@@ -201,7 +208,7 @@ function initShows() {
                     + time.getFullYear() + ' '
                     + ((time.getHours() + 24) % 12 || 12) + ':'
                     + ('0' + time.getMinutes()).slice(-2)
-                    + ((time.getHours() >= 12) ? "PM" : "AM") + '</h4></div></div></a>';
+                    + ((time.getHours() >= 12) ? 'PM' : 'AM') + '</h4></div></div></a>';
             });
             showSelectionContainer.html(html);
         }
@@ -215,8 +222,8 @@ function initSeatCharts() {
         placement: 'right',
         container: 'body',
         delay: {
-            "show": 100,
-            "hide": 600
+            'show': 100,
+            'hide': 600
         }
     });
 

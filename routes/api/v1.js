@@ -86,7 +86,7 @@ router.get('/token', function(req, res) {
 router.post('/checkout', function(req, res) {
     var seats = req.body.seats.split(',');
     gateway.transaction.sale({
-        amount: seats.length * 5,
+        amount: req.body.price,
         paymentMethodNonce: req.body.paymentMethodNonce,
         customer: {
             firstName: req.body.firstName,
@@ -116,7 +116,7 @@ router.post('/checkout', function(req, res) {
                 if (err) console.error(err);
 
                 seats.forEach(function(seat) {
-                    var insert = {transactionid: transaction.id, showid: req.body.show, seat: seat};
+                    var insert = {transactionid: transaction.id, showid: req.body.showid, seat: seat};
                     connection.query('INSERT INTO `purchased_seats` SET ?;', insert);
                 });
 
@@ -135,9 +135,9 @@ router.post('/checkout', function(req, res) {
                 from: 'Forsyth Theatre <mail@forsyththeatre.com>',
                 to: transaction.customer.email,
                 subject: 'Ticket Confirmation ' + transaction.id,
-                text: 'Thank you for purchasing tickets for Into the Woods! Your confirmation number is ' + transaction.id + '. You will need this number when picking up tickets in the lobby. Here are the details of your transaction:'
+                text: 'Thank you for purchasing tickets for ' + req.body.showname + '! Your confirmation number is ' + transaction.id + '. Please keep this for your records.'
             }, function(err, body) {
-                if (err) throw err;
+                if (err) console.error(err);
             });
         }
     });

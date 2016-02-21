@@ -15,8 +15,9 @@
         </div>
 
         <div class="col-xs-4">
-            <p>Total Number of Tickets: <b><%- selectedSeats.length %></b></p>
-            <p>Total Price: <b>$<%- selectedSeats.length * 5 %></b></p>
+            <p>Number of Adult Tickets: <b><%- adultSeatsAmount %></b></p>
+            <p>Number of Student Tickets: <b><%- studentSeatsAmount %></b></p>
+            <p>Total Price: <b>$<%- totalPrice %>.00</b></p>
         </div>
     </div>
 </div>
@@ -85,7 +86,8 @@
 
             <div class="row">
                 <div class="col-xs-offset-10 col-xs-2">
-                    <input type="hidden" value="<%- selectedShow %>" name="show" />
+                    <input type="hidden" value="<%- selectedShow.id %>" name="showid" />
+                    <input type="hidden" value="<%- selectedShow.name %>" name="showname" />
                     <input type="hidden" value="<%- selectedSeats.join() %>" name="seats" />
                     <input class="btn btn-primary pull-right" id="purchase-button" type="submit" value="Purchase">
                 </div>
