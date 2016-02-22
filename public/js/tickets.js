@@ -79,34 +79,53 @@ $('body').on('click', '.show-selection-link', function(e) {
                     },
                     onPaymentMethodReceived: function(obj) {
                         $.ajax({
-                            type: 'POST',
-                            url: '/api/v1/checkout',
+                            type: 'GET',
+                            url: '/api/v1/purchased_seats',
                             dataType: 'JSON',
-                            data: {
-                                seats: $('input[name=seats]').val(),
-                                price: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice),
-                                showid: $('input[name=showid]').val(),
-                                showname: $('input[name=showname]').val(),
-                                paymentMethodNonce: obj['nonce'],
-                                firstName: $('input[name=firstName]').val(),
-                                lastName: $('input[name=lastName]').val(),
-                                email: $('input[name=email]').val(),
-                                phone: $('input[name=phone]').val(),
-                                address: $('input[name=address]').val(),
-                                city: $('input[name=city]').val(),
-                                state: $('input[name=state]').val(),
-                                zip: $('input[name=zip]').val()
-                            },
                             success: function(data) {
-                                getTemplate('/views/partials/confirmation.ejs', function(err, template) {
-                                    var confirmation = ejs.render(template, {
-                                        confirmationNumber: data.confirmationNumber,
-                                        show: selectedShow,
-                                        time: new Date(selectedShow.time)
-                                    });
-                                    $('#content').html(confirmation);
-                                    $('.breadcrumb li:eq(3)').toggleClass('active');
+                                var seats = selectedSeats.split(',');
+                                var problem = false;
+                                data.forEach(function(purchasedSeat) {
+                                    if (seats.indexOf(purchasedSeat) == -1) {
+                                        problem = true;
+                                    }
                                 });
+
+                                if (!problem) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/api/v1/checkout',
+                                        dataType: 'JSON',
+                                        data: {
+                                            seats: $('input[name=seats]').val(),
+                                            price: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice),
+                                            showid: $('input[name=showid]').val(),
+                                            showname: $('input[name=showname]').val(),
+                                            paymentMethodNonce: obj['nonce'],
+                                            firstName: $('input[name=firstName]').val(),
+                                            lastName: $('input[name=lastName]').val(),
+                                            email: $('input[name=email]').val(),
+                                            phone: $('input[name=phone]').val(),
+                                            address: $('input[name=address]').val(),
+                                            city: $('input[name=city]').val(),
+                                            state: $('input[name=state]').val(),
+                                            zip: $('input[name=zip]').val()
+                                        },
+                                        success: function(data) {
+                                            getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                                                var confirmation = ejs.render(template, {
+                                                    confirmationNumber: data.confirmationNumber,
+                                                    show: selectedShow,
+                                                    time: new Date(selectedShow.time)
+                                                });
+                                                $('#content').html(confirmation);
+                                                $('.breadcrumb li:eq(3)').toggleClass('active');
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    // TODO: Alert user of error
+                                }
                             }
                         });
                     },
