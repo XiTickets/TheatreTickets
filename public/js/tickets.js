@@ -86,7 +86,7 @@ $('body').on('click', '.show-selection-link', function(e) {
                                 var seats = selectedSeats.join(',');
                                 var problem = false;
                                 data.forEach(function(purchasedSeat) {
-                                    if (seats.indexOf(purchasedSeat) == -1) {
+                                    if (seats.indexOf(purchasedSeat) != -1) {
                                         problem = true;
                                     }
                                 });
