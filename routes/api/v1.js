@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var fs = require('fs');
 var braintree = require('braintree');
 var mailgun = require('mailgun-js')({apiKey: 'key-d141be8ca986a254ab9e272aaffbc592', domain: 'forsyththeatre.com'});
 var mysql = require('mysql');
