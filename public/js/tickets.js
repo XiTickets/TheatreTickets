@@ -80,7 +80,7 @@ $('body').on('click', '.show-selection-link', function(e) {
                     onPaymentMethodReceived: function(obj) {
                         $.ajax({
                             type: 'GET',
-                            url: '/api/v1/shows/' + selectedShow + '/purchased_seats',
+                            url: '/api/v1/shows/' + selectedShow.id + '/purchased_seats',
                             dataType: 'JSON',
                             success: function(data) {
                                 var seats = selectedSeats.join(',');
