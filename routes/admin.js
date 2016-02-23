@@ -9,7 +9,7 @@ router.get('/*', function(req, res, next) {
         res.sendStatus(401);
         return;
     }
-    if (user.name === 'pos' && user.pass === 'password') {
+    if (user.name === 'pos' && user.pass === '') {
         next();
     } else {
         res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
