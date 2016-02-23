@@ -126,7 +126,6 @@ $('body').on('click', '.show-selection-link', function(e) {
                                 } else {
                                     $('#purchase-button').popover({
                                         content: 'Sorry, but the seats that you originally selected are no longer available. Please refresh the page and try again.',
-                                        html: true,
                                         placement: 'left',
                                         container: 'body'
                                     }).popover('show');
@@ -164,7 +163,6 @@ $('body').on('click', '.show-selection-link', function(e) {
                         if (type === 'VALIDATION') {
                             $('#purchase-button').popover({
                                 content: message,
-                                html: true,
                                 placement: 'left',
                                 container: 'body'
                             }).popover('show');
