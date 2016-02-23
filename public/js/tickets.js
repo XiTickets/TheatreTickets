@@ -83,7 +83,7 @@ $('body').on('click', '.show-selection-link', function(e) {
                             url: '/api/v1/shows/' + selectedShow + '/purchased_seats',
                             dataType: 'JSON',
                             success: function(data) {
-                                var seats = selectedSeats.split(',');
+                                var seats = selectedSeats.join(',');
                                 var problem = false;
                                 data.forEach(function(purchasedSeat) {
                                     if (seats.indexOf(purchasedSeat) == -1) {
