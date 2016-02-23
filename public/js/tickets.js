@@ -124,7 +124,15 @@ $('body').on('click', '.show-selection-link', function(e) {
                                         }
                                     });
                                 } else {
-                                    // TODO: Alert user of error
+                                    $('#purchase-button').popover({
+                                        content: 'Sorry, but the seats that you originally selected are no longer available. Please refresh the page and try again.',
+                                        html: true,
+                                        placement: 'left',
+                                        container: 'body'
+                                    }).popover('show');
+                                    setTimeout(function() {
+                                        $('#checkout-button').popover('hide');
+                                    }, 3000);
                                 }
                             }
                         });
@@ -150,6 +158,21 @@ $('body').on('click', '.show-selection-link', function(e) {
                             '::-moz-placeholder': {'color': '#999'},
                             ':-ms-input-placeholder': {'color': '#999'},
                             '::-webkit-input-placeholder': {'color': '#999'}
+                        }
+                    },
+                    onError: function(type, message) {
+                        if (type === 'VALIDATION') {
+                            $('#purchase-button').popover({
+                                content: message,
+                                html: true,
+                                placement: 'left',
+                                container: 'body'
+                            }).popover('show');
+                            setTimeout(function() {
+                                $('#checkout-button').popover('hide');
+                            }, 3000);
+                        } else if (type === 'CONFIGURATION') {
+                            $('#content').html('Sorry, but we could not configure the payment processor. Please email Payton Burnett at pburnett@forsythr3.k12.mo.us, and include the following message: ' + message);
                         }
                     }
                 });
