@@ -1,20 +1,40 @@
-<%- include header.ejs %>
-<div class="container">
-    <div class="row">
-        <div class="col-xs-8 col-md-6">
-            <ol class="breadcrumb">
-                <li>Select Show</li>
-                <li class="active">Select Seats</li>
-                <li class="active">Checkout</li>
-                <li class="active">Confirmation</li>
-            </ol>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Forsyth Tickets</title>
+
+        <link rel="stylesheet" href="/css/jquery.seat-charts.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/tickets.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-8 col-md-6">
+                    <ol class="breadcrumb">
+                        <li>Select Show</li>
+                        <li class="active">Select Seats</li>
+                        <li class="active">Checkout</li>
+                        <li class="active">Confirmation</li>
+                    </ol>
+                </div>
+
+                <div class="col-xs-offset-2 col-xs-2 col-md-offset-4 col-md-2">
+                    <a href="https://forsyththeatre.com" class="btn btn-default pull-right">Back to Home</a>
+                </div>
+            </div>
         </div>
-        <div class="col-xs-offset-2 col-xs-2 col-md-offset-4 col-md-2">
-            <a href="https://forsyththeatre.com" class="btn btn-default pull-right">Back to Home</a>
+
+        <div class="container" id="content">
+            <%- include partials/showselection.ejs %>
         </div>
-    </div>
-</div>
-<div class="container" id="content">
-    <%- include partials/showselection.ejs %>
-</div>
-<%- include footer.ejs %>
+
+        <script src="/js/jquery-2.1.4.min.js"></script>
+        <script src="/js/ejs.min.js"></script>
+        <script src="/js/jquery.seat-charts.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/braintree.js"></script>
+        <script src="/js/tickets.js"></script>
+    </body>
+</html>

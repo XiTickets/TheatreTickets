@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>POS | Seating Chart</title>
+
+        <link rel="stylesheet" href="/css/jquery.seat-charts.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/pos.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row" id="stage-box">
+                <h1>Stage</h1>
+            </div>
+
+            <div class="row" id="seat-map"></div>
+        </div>
+
+        <script src="/js/jquery-2.1.4.min.js"></script>
+        <script src="/js/jquery.seat-charts.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/pos.js"></script>
+
+        <script>
+            var showID = <%- showID %>;
+        </script>
+    </body>
+</html>
