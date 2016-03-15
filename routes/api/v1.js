@@ -1,21 +1,21 @@
 var express = require('express');
 var router = express.Router();
 var braintree = require('braintree');
-var mailgun = require('mailgun-js')({apiKey: 'key-d141be8ca986a254ab9e272aaffbc592', domain: 'forsyththeatre.com'});
+var mailgun = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY, domain: process.env.MAILGUN_DOMAIN});
 var mysql = require('mysql');
 
 var gateway = braintree.connect({
-    environment: braintree.Environment.Sandbox,
-    merchantId: 'cwznyw6q4qvn6rxk',
-    publicKey: 'vry5k83ymbh6wnnx',
-    privateKey: '040965d85dd2b82bb5cf3cbef251053f'
+    environment: (process.env.BRAINTREE_ENVIRONMENT === 'production' ? braintree.Environment.Production : braintree.Environment.Sandbox),
+    merchantId: process.env.BRAINTREE_MERCHANT_ID,
+    publicKey: process.env.BRAINTREE_PUBLIC_KEY,
+    privateKey: process.env.BRAINTREE_PRIVATE_KEY
 });
 
 var pool = mysql.createPool({
-    host: 'bhs1.hosting.jaredbates.net',
-    user: 'forsythtickets',
-    password: 'w4Qh3kseUg7UJJFp',
-    database: 'forsythtickets_qa'
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
 });
 
 router.get('/shows', function(req, res) {
@@ -131,7 +131,7 @@ router.post('/checkout', function(req, res) {
             });
 
             mailgun.messages().send({
-                from: 'Forsyth Theatre <mail@forsyththeatre.com>',
+                from: process.env.MAIL_FROM,
                 to: transaction.customer.email,
                 subject: 'Ticket Confirmation ' + transaction.id,
                 text: 'Thank you for purchasing tickets for ' + req.body.showname + '! Your confirmation number is ' + transaction.id + '. Please keep this for your records.'

@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS `purchased_seats` (
+`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `transactionid` varchar(36) DEFAULT NULL,
+  `showid` INT NOT NULL,
+  `seat` VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `shows` (
+`id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `logourl` VARCHAR(2083) NOT NULL,
+  `time` DATETIME NOT NULL,
+  `studentprice` DECIMAL(14,2) NOT NULL,
+  `adultprice` DECIMAL(14,2) NOT NULL
+);

@@ -1,7 +1,17 @@
-# ForsythPACTickets
+# TheatreTickets
 [![Build Status](https://magnum.travis-ci.com/computerwizjared/ForsythPACTickets.svg?token=pEyWzSUfkqxXXoPvnJws)](https://magnum.travis-ci.com/computerwizjared/ForsythPACTickets)
 
-Ticketing software for the Forsyth R-III Performing Arts Center
+Theatre Ticketing/Seating Chart Software
 
-## License
-Copyright &copy; 2015 Jared Bates | All Rights Reserved
+## Environment Variables
+- BRAINTREE_ENVIRONMENT
+- BRAINTREE_MERCHANT_ID
+- BRAINTREE_PUBLIC_KEY
+- BRAINTREE_PRIVATE_KEY
+- MAIL_FROM
+- MAILGUN_DOMAIN
+- MAILGUN_KEY
+- MYSQL_HOST
+- MYSQL_DATABASE
+- MYSQL_USER
+- MYSQL_PASSWORD
