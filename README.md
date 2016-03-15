@@ -1,7 +1,11 @@
 # TheatreTickets
-[![Build Status](https://magnum.travis-ci.com/computerwizjared/ForsythPACTickets.svg?token=pEyWzSUfkqxXXoPvnJws)](https://magnum.travis-ci.com/computerwizjared/ForsythPACTickets)
+[![Build Status](https://travis-ci.com/computerwizjared/TheatreTickets.svg?token=pEyWzSUfkqxXXoPvnJws&branch=master)](https://travis-ci.com/computerwizjared/TheatreTickets)
 
 Theatre Ticketing/Seating Chart Software
+
+## Notice
+
+This software is not complete and far from tested or stable. There's also a bunch of security issues that I am aware of. If you come across this and want to work on it, _please_ email me at [me@jaredbates.net](mailto:me@jaredbates.net). I would be glad to help you and would greatly welcome any changes you suggest.
 
 ## Environment Variables
 - BRAINTREE_ENVIRONMENT
