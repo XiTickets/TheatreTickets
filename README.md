@@ -1,5 +1,5 @@
 # TheatreTickets
-[![Build Status](https://travis-ci.com/computerwizjared/TheatreTickets.svg?token=pEyWzSUfkqxXXoPvnJws&branch=master)](https://travis-ci.com/computerwizjared/TheatreTickets)
+[![Build Status](https://travis-ci.org/computerwizjared/TheatreTickets.svg?branch=master)](https://travis-ci.org/computerwizjared/TheatreTickets)
 
 Theatre Ticketing/Seating Chart Software
 
