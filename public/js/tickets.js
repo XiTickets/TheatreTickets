@@ -101,7 +101,6 @@ $('body').on('click', '.show-selection-link', function(e) {
                                             price: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice),
                                             showid: $('input[name=showid]').val(),
                                             showname: $('input[name=showname]').val(),
-                                            paymentMethodNonce: obj['nonce'],
                                             firstName: $('input[name=firstName]').val(),
                                             lastName: $('input[name=lastName]').val(),
                                             email: $('input[name=email]').val(),

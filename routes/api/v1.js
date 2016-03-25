@@ -1,15 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var braintree = require('braintree');
 var mailgun = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY, domain: process.env.MAILGUN_DOMAIN});
+var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 var mysql = require('mysql');
-
-var gateway = braintree.connect({
-    environment: (process.env.BRAINTREE_ENVIRONMENT === 'production' ? braintree.Environment.Production : braintree.Environment.Sandbox),
-    merchantId: process.env.BRAINTREE_MERCHANT_ID,
-    publicKey: process.env.BRAINTREE_PUBLIC_KEY,
-    privateKey: process.env.BRAINTREE_PRIVATE_KEY
-});
 
 var pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
@@ -72,21 +65,10 @@ router.get('/shows/:id/purchased_seats', function(req, res) {
     });
 });
 
-router.get('/token', function(req, res) {
-    gateway.clientToken.generate({}, function(err, response) {
-        if (err) console.error(err);
-
-        res.json({
-            "clientToken": response.clientToken
-        });
-    });
-});
-
 router.post('/checkout', function(req, res) {
     var seats = req.body.seats.split(',');
     gateway.transaction.sale({
         amount: req.body.price,
-        paymentMethodNonce: req.body.paymentMethodNonce,
         customer: {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
