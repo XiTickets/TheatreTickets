@@ -34,7 +34,10 @@
         <script src="/js/ejs.min.js"></script>
         <script src="/js/jquery.seat-charts.min.js"></script>
         <script src="/js/bootstrap.min.js"></script>
-        <script src="/js/braintree.js"></script>
         <script src="/js/tickets.js"></script>
+
+        <script>
+            window.stripePublishableKey = <%- stripePublishableKey %>;
+        </script>
     </body>
 </html>

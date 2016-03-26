@@ -55,30 +55,18 @@ $('body').on('click', '.show-selection-link', function(e) {
 
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
         var checkout = ejs.render(template, {
+            stripePublishableKey: window.stripePublishableKey,
             selectedSeats: selectedSeats,
             show: selectedShow,
             time: new Date(selectedShow.time),
             adultSeatsAmount: adultSeatsAmount,
             studentSeatsAmount: studentSeatsAmount,
-            totalPrice: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice)
+            totalPrice: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice) + 1
         });
         $('#content').html(checkout);
         $('.breadcrumb li:eq(2)').toggleClass('active');
 
-        // Braintree Setup
-        $.ajax({
-            type: 'GET',
-            url: '/api/v1/token',
-            dataType: 'JSON',
-            success: function(data) {
-                braintree.setup(data.clientToken, 'custom', {
-                    id: 'payment-form',
-                    onReady: function() {
-                        $('.spinner').remove();
-                        $('#payment-form').removeClass('hidden');
-                    },
-                    onPaymentMethodReceived: function(obj) {
-                        $.ajax({
+                        /* RUN ON PURCHASE CONFIRMATION $.ajax({
                             type: 'GET',
                             url: '/api/v1/shows/' + selectedShow.id + '/purchased_seats',
                             dataType: 'JSON',
@@ -124,7 +112,7 @@ $('body').on('click', '.show-selection-link', function(e) {
                                     });
                                 } else {
                                     $('#purchase-button').popover({
-                                        content: 'Sorry, but the seats that you originally selected are no longer available. Please refresh the page and try again.',
+                                        content: 'Sorry, but the seats that you originally selected are no longer available. Your credit card has not been charged. Please refresh the page and try again.',
                                         placement: 'left',
                                         container: 'body'
                                     }).popover('show');
@@ -133,60 +121,7 @@ $('body').on('click', '.show-selection-link', function(e) {
                                     }, 3000);
                                 }
                             }
-                        });
-                    },
-                    hostedFields: {
-                        number: {
-                            selector: '#card-number',
-                            placeholder: 'Credit Card Number'
-                        },
-                        cvv: {
-                            selector: '#cvv',
-                            placeholder: 'CVV'
-                        },
-                        expirationDate: {
-                            selector: '#expiration-date',
-                            placeholder: 'MM/YY'
-                        },
-                        styles: {
-                            'input': {
-                                'font-family': '"Helvetica Neue", Helvetica, Arial, sans-serif',
-                                'font-size': '14px'
-                            },
-                            '::-moz-placeholder': {'color': '#999'},
-                            ':-ms-input-placeholder': {'color': '#999'},
-                            '::-webkit-input-placeholder': {'color': '#999'}
-                        }
-                    },
-                    onError: function(type, message) {
-                        if (type === 'VALIDATION') {
-                            $('#purchase-button').popover({
-                                content: message,
-                                placement: 'left',
-                                container: 'body'
-                            }).popover('show');
-                            setTimeout(function() {
-                                $('#checkout-button').popover('hide');
-                            }, 3000);
-                        } else if (type === 'CONFIGURATION') {
-                            $('#content').html('Sorry, but we could not configure the payment processor. Please email Payton Burnett at pburnett@forsythr3.k12.mo.us, and include the following message: ' + message);
-                        }
-                    }
-                });
-            }
-        });
-
-        $('#secure-popover-text').popover({
-            trigger: 'hover focus',
-            content: 'All credit card information is processed by our external provider, <a href="https://www.braintreepayments.com/" target="_blank">BrainTree</a> (a PayPal company), and fully encrypted every step of the way.',
-            html: true,
-            placement: 'right',
-            container: 'body',
-            delay: {
-                'show': 100,
-                'hide': 600
-            }
-        });
+                        });*/
     });
 }).on('click', '#seats-goback-button', function(e) {
     e.preventDefault();
