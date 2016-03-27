@@ -66,42 +66,33 @@ router.get('/shows/:id/purchased_seats', function(req, res) {
 
 router.post('/checkout', function(req, res) {
     var seats = req.body.seats.split(',');
+    console.log(req.body.studentSeatsAmount);
+    console.log(req.body.studentPrice);
     stripe.charges.create({
-        amount: req.body.price,
+        amount: (req.body.studentSeatsAmount * req.body.studentPrice) + (req.body.adultSeatsAmount * req.body.adultPrice) + 1,
         currency: 'USD',
-        source: req.body.stripeToken
+        source: req.body.stripeToken,
+        description: seats.length + ' Ticket' + (seats.length > 1 ? 's' : '')
     }, function(err, charge) {
-        if (err) console.log(err);
-
-        var transaction = result.transaction;
+        if (err) console.err(err);
 
         pool.getConnection(function(err, connection) {
             if (err) console.error(err);
 
             seats.forEach(function(seat) {
-                var insert = {transactionid: transaction.id, showid: req.body.showID, seat: seat};
+                var insert = {transactionid: charge.id, showid: req.body.showID, seat: seat};
                 connection.query('INSERT INTO `purchased_seats` SET ?;', insert);
             });
 
             connection.release();
         });
 
-        res.json({
-            "confirmationNumber": transaction.id,
+        /*res.json({
             "card": {
-                "last4": transaction.creditCard.last4,
-                "type": transaction.creditCard.cardType
+                "last4": charge.source.last4,
+                "type": charge.source.brand
             }
-        });
-
-        mailgun.messages().send({
-            from: process.env.MAIL_FROM,
-            to: transaction.customer.email,
-            subject: 'Ticket Confirmation ' + transaction.id,
-            text: 'Thank you for purchasing tickets for ' + req.body.showName + '! Please keep this for your records.'
-        }, function(err, body) {
-            if (err) console.error(err);
-        });
+        });*/
     });
 });
 

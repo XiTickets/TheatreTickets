@@ -54,38 +54,55 @@ $('body').on('click', '.show-selection-link', function(e) {
     }
 
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
+        var totalPrice = (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice) + 1;
         var checkout = ejs.render(template, {
-            stripePublishableKey: window.stripePublishableKey,
             selectedSeats: selectedSeats,
             show: selectedShow,
             time: new Date(selectedShow.time),
             adultSeatsAmount: adultSeatsAmount,
-            studentSeatsAmount: studentSeatsAmount,
-            totalPrice: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice) + 1
+            studentSeatsAmount: studentSeatsAmount
         });
+
         $('#content').html(checkout);
         $('.breadcrumb li:eq(2)').toggleClass('active');
+        
+        var handler = StripeCheckout.configure({
+            key: window.stripePublishableKey,
+            amount: totalPrice.toFixed(2) * 100,
+            name: 'Forsyth Theatre',
+            description: adultSeatsAmount + studentSeatsAmount,
+            locale: 'auto',
+            token: function(token) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/v1/checkout',
+                    dataType: 'JSON',
+                    data: {
+                        stripeToken: token
+                    },
+                    success: function(data) {
+                        getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                            var confirmation = ejs.render(template, {
+                                show: selectedShow,
+                                time: new Date(selectedShow.time)
+                            });
+                            $('#content').html(confirmation);
+                            $('.breadcrumb li:eq(3)').toggleClass('active');
+                        });
+                    }
+                });
+            }
+        });
 
         $('#checkout-form').get(0).submit = function() {
             var stripeData = $(this).serializeArray();
             stripeData.seats = selectedSeats.join(',');
+            stripeData.studentSeatsAmount = studentSeatsAmount;
+            stripeData.adultSeatsAmount = adultSeatsAmount;
+            stripeData.studentPrice = selectedShow.studentprice;
+            stripeData.adultPrice = selectedShow.adultprice;
 
-            $.ajax({
-                type: 'POST',
-                url: '/api/v1/checkout',
-                dataType: 'JSON',
-                data: stripeData,
-                success: function(data) {
-                    getTemplate('/views/partials/confirmation.ejs', function(err, template) {
-                        var confirmation = ejs.render(template, {
-                            show: selectedShow,
-                            time: new Date(selectedShow.time)
-                        });
-                        $('#content').html(confirmation);
-                        $('.breadcrumb li:eq(3)').toggleClass('active');
-                    });
-                }
-            });
+
 
             return false;
         };

@@ -52,9 +52,6 @@
         <form action="/api/v1/checkout" method="POST" class="pull-right" id="checkout-form">
             <script
                     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-key="<%- stripePublishableKey %>"
-                    data-amount="<%- totalPrice.toFixed(2) * 100 %>"
-                    data-name="Forsyth Theatre"
                     data-description="<%- adultSeatsAmount + studentSeatsAmount %> Ticket<% if (adultSeatsAmount + studentSeatsAmount > 1) { %>s<% } %> ($<%- totalPrice.toFixed(2) %>)"
                     data-locale="auto"
                     data-label="Purchase"
