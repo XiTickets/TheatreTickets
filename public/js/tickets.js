@@ -66,62 +66,29 @@ $('body').on('click', '.show-selection-link', function(e) {
         $('#content').html(checkout);
         $('.breadcrumb li:eq(2)').toggleClass('active');
 
-                        /* RUN ON PURCHASE CONFIRMATION $.ajax({
-                            type: 'GET',
-                            url: '/api/v1/shows/' + selectedShow.id + '/purchased_seats',
-                            dataType: 'JSON',
-                            success: function(data) {
-                                var seats = selectedSeats.join(',');
-                                var problem = false;
-                                data.forEach(function(purchasedSeat) {
-                                    if (seats.indexOf(purchasedSeat) != -1) {
-                                        problem = true;
-                                    }
-                                });
+        $('#checkout-form').get(0).submit = function() {
+            var stripeData = $(this).serializeArray();
+            stripeData.seats = selectedSeats.join(',');
 
-                                if (!problem) {
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: '/api/v1/checkout',
-                                        dataType: 'JSON',
-                                        data: {
-                                            seats: $('input[name=seats]').val(),
-                                            price: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice),
-                                            showid: $('input[name=showid]').val(),
-                                            showname: $('input[name=showname]').val(),
-                                            firstName: $('input[name=firstName]').val(),
-                                            lastName: $('input[name=lastName]').val(),
-                                            email: $('input[name=email]').val(),
-                                            phone: $('input[name=phone]').val(),
-                                            address: $('input[name=address]').val(),
-                                            city: $('input[name=city]').val(),
-                                            state: $('input[name=state]').val(),
-                                            zip: $('input[name=zip]').val()
-                                        },
-                                        success: function(data) {
-                                            getTemplate('/views/partials/confirmation.ejs', function(err, template) {
-                                                var confirmation = ejs.render(template, {
-                                                    confirmationNumber: data.confirmationNumber,
-                                                    show: selectedShow,
-                                                    time: new Date(selectedShow.time)
-                                                });
-                                                $('#content').html(confirmation);
-                                                $('.breadcrumb li:eq(3)').toggleClass('active');
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    $('#purchase-button').popover({
-                                        content: 'Sorry, but the seats that you originally selected are no longer available. Your credit card has not been charged. Please refresh the page and try again.',
-                                        placement: 'left',
-                                        container: 'body'
-                                    }).popover('show');
-                                    setTimeout(function() {
-                                        $('#checkout-button').popover('hide');
-                                    }, 3000);
-                                }
-                            }
-                        });*/
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/checkout',
+                dataType: 'JSON',
+                data: stripeData,
+                success: function(data) {
+                    getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                        var confirmation = ejs.render(template, {
+                            show: selectedShow,
+                            time: new Date(selectedShow.time)
+                        });
+                        $('#content').html(confirmation);
+                        $('.breadcrumb li:eq(3)').toggleClass('active');
+                    });
+                }
+            });
+
+            return false;
+        };
     });
 }).on('click', '#seats-goback-button', function(e) {
     e.preventDefault();

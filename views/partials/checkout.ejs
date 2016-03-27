@@ -49,7 +49,7 @@
     </div>
 
     <div class="col-xs-offset-8 col-xs-2">
-        <form action="/api/v1/checkout" method="POST" class="pull-right">
+        <form action="/api/v1/checkout" method="POST" class="pull-right" id="checkout-form">
             <script
                     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                     data-key="<%- stripePublishableKey %>"
