@@ -97,7 +97,7 @@ router.post('/checkout', function(req, res) {
                 if (err) console.error(err);
 
                 seats.forEach(function(seat) {
-                    var insert = {transactionid: transaction.id, showid: req.body.showid, seat: seat};
+                    var insert = {transactionid: transaction.id, showid: req.body.showID, seat: seat};
                     connection.query('INSERT INTO `purchased_seats` SET ?;', insert);
                 });
 
@@ -116,7 +116,7 @@ router.post('/checkout', function(req, res) {
                 from: process.env.MAIL_FROM,
                 to: transaction.customer.email,
                 subject: 'Ticket Confirmation ' + transaction.id,
-                text: 'Thank you for purchasing tickets for ' + req.body.showname + '! Your confirmation number is ' + transaction.id + '. Please keep this for your records.'
+                text: 'Thank you for purchasing tickets for ' + req.body.showName + '! Your confirmation number is ' + transaction.id + '. Please keep this for your records.'
             }, function(err, body) {
                 if (err) console.error(err);
             });
