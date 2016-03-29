@@ -85,12 +85,12 @@ router.post('/checkout', function(req, res) {
             connection.release();
         });
 
-        /*res.json({
+        res.json({
             "card": {
                 "last4": charge.source.last4,
-                "type": charge.source.brand
+                "type": charge.source.brannd
             }
-        });*/
+        });
     });
 });
 
