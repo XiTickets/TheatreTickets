@@ -60,7 +60,8 @@ $('body').on('click', '.show-selection-link', function(e) {
             show: selectedShow,
             time: new Date(selectedShow.time),
             adultSeatsAmount: adultSeatsAmount,
-            studentSeatsAmount: studentSeatsAmount
+            studentSeatsAmount: studentSeatsAmount,
+            totalPrice: totalPrice
         });
 
         $('#content').html(checkout);
@@ -70,15 +71,24 @@ $('body').on('click', '.show-selection-link', function(e) {
             key: window.stripePublishableKey,
             amount: totalPrice.toFixed(2) * 100,
             name: 'Forsyth Theatre',
-            description: adultSeatsAmount + studentSeatsAmount,
+            description: adultSeatsAmount + studentSeatsAmount + ' Ticket' + (adultSeatsAmount + studentSeatsAmount > 1 ? 's' : '') + ' ($' + totalPrice.toFixed(2) + ')',
+            billingAddress: true,
+            allowRememberMe: false,
             locale: 'auto',
             token: function(token) {
+                console.log(token);
                 $.ajax({
                     type: 'POST',
                     url: '/api/v1/checkout',
                     dataType: 'JSON',
                     data: {
-                        stripeToken: token
+                        stripeToken: token.id,
+                        showID: selectedShow.id,
+                        studentPrice: selectedShow.studentprice,
+                        adultPrice: selectedShow.adultprice,
+                        seats: selectedSeats.join(),
+                        studentSeatsAmount: studentSeatsAmount,
+                        adultSeatsAmount: adultSeatsAmount
                     },
                     success: function(data) {
                         getTemplate('/views/partials/confirmation.ejs', function(err, template) {
@@ -94,18 +104,15 @@ $('body').on('click', '.show-selection-link', function(e) {
             }
         });
 
-        $('#checkout-form').get(0).submit = function() {
-            var stripeData = $(this).serializeArray();
-            stripeData.seats = selectedSeats.join(',');
-            stripeData.studentSeatsAmount = studentSeatsAmount;
-            stripeData.adultSeatsAmount = adultSeatsAmount;
-            stripeData.studentPrice = selectedShow.studentprice;
-            stripeData.adultPrice = selectedShow.adultprice;
+        $('#purchase-button').on('click', function(e) {
+            e.preventDefault();
 
+            handler.open();
+        });
 
-
-            return false;
-        };
+        $(window).on('popstate', function() {
+            handler.close();
+        });
     });
 }).on('click', '#seats-goback-button', function(e) {
     e.preventDefault();

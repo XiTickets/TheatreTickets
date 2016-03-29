@@ -49,18 +49,6 @@
     </div>
 
     <div class="col-xs-offset-8 col-xs-2">
-        <form action="/api/v1/checkout" method="POST" class="pull-right" id="checkout-form">
-            <script
-                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-description="<%- adultSeatsAmount + studentSeatsAmount %> Ticket<% if (adultSeatsAmount + studentSeatsAmount > 1) { %>s<% } %> ($<%- totalPrice.toFixed(2) %>)"
-                    data-locale="auto"
-                    data-label="Purchase"
-                    data-billing-address="true"
-                    data-allow-remember-me="false">
-            </script>
-            <input type="hidden" value="<%- selectedShow.id %>" name="showID">
-            <input type="hidden" value="<%- selectedShow.name %>" name="showName">
-            <input type="hidden" value="<%- selectedSeats.join() %>" name="seats">
-        </form>
+        <button class="btn btn-primary pull-right" id="purchase-button">Purchase</button>
     </div>
 </div>

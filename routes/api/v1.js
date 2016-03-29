@@ -66,15 +66,13 @@ router.get('/shows/:id/purchased_seats', function(req, res) {
 
 router.post('/checkout', function(req, res) {
     var seats = req.body.seats.split(',');
-    console.log(req.body.studentSeatsAmount);
-    console.log(req.body.studentPrice);
     stripe.charges.create({
         amount: (req.body.studentSeatsAmount * req.body.studentPrice) + (req.body.adultSeatsAmount * req.body.adultPrice) + 1,
         currency: 'USD',
         source: req.body.stripeToken,
         description: seats.length + ' Ticket' + (seats.length > 1 ? 's' : '')
     }, function(err, charge) {
-        if (err) console.err(err);
+        if (err) console.error(err);
 
         pool.getConnection(function(err, connection) {
             if (err) console.error(err);
