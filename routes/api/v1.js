@@ -88,7 +88,7 @@ router.post('/checkout', function(req, res) {
         res.json({
             "card": {
                 "last4": charge.source.last4,
-                "type": charge.source.brannd
+                "type": charge.source.brand
             }
         });
     });
