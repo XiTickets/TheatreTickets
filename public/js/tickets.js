@@ -66,7 +66,7 @@ $('body').on('click', '.show-selection-link', function(e) {
 
         $('#content').html(checkout);
         $('.breadcrumb li:eq(2)').toggleClass('active');
-        
+
         var handler = StripeCheckout.configure({
             key: window.stripePublishableKey,
             amount: totalPrice.toFixed(2) * 100,
@@ -76,7 +76,6 @@ $('body').on('click', '.show-selection-link', function(e) {
             allowRememberMe: false,
             locale: 'auto',
             token: function(token) {
-                console.log(token);
                 $.ajax({
                     type: 'POST',
                     url: '/api/v1/checkout',

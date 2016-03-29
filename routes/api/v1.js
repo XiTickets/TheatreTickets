@@ -67,7 +67,7 @@ router.get('/shows/:id/purchased_seats', function(req, res) {
 router.post('/checkout', function(req, res) {
     var seats = req.body.seats.split(',');
     stripe.charges.create({
-        amount: (req.body.studentSeatsAmount * req.body.studentPrice) + (req.body.adultSeatsAmount * req.body.adultPrice) + 1,
+        amount: ((req.body.studentSeatsAmount * req.body.studentPrice) + (req.body.adultSeatsAmount * req.body.adultPrice) + 1).toFixed(2) * 100,
         currency: 'USD',
         source: req.body.stripeToken,
         description: seats.length + ' Ticket' + (seats.length > 1 ? 's' : '')
