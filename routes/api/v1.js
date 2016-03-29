@@ -1,15 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var braintree = require('braintree');
-var mailgun = require('mailgun-js')({apiKey: process.env.MAILGUN_KEY, domain: process.env.MAILGUN_DOMAIN});
+var stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 var mysql = require('mysql');
-
-var gateway = braintree.connect({
-    environment: (process.env.BRAINTREE_ENVIRONMENT === 'production' ? braintree.Environment.Production : braintree.Environment.Sandbox),
-    merchantId: process.env.BRAINTREE_MERCHANT_ID,
-    publicKey: process.env.BRAINTREE_PUBLIC_KEY,
-    privateKey: process.env.BRAINTREE_PRIVATE_KEY
-});
 
 var pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
@@ -72,73 +64,33 @@ router.get('/shows/:id/purchased_seats', function(req, res) {
     });
 });
 
-router.get('/token', function(req, res) {
-    gateway.clientToken.generate({}, function(err, response) {
-        if (err) console.error(err);
-
-        res.json({
-            "clientToken": response.clientToken
-        });
-    });
-});
-
 router.post('/checkout', function(req, res) {
     var seats = req.body.seats.split(',');
-    gateway.transaction.sale({
-        amount: req.body.price,
-        paymentMethodNonce: req.body.paymentMethodNonce,
-        customer: {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            phone: req.body.phone
-        },
-        billing: {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            streetAddress: req.body.address,
-            locality: req.body.city,
-            region: req.body.state,
-            postalCode: req.body.zip,
-            countryCodeAlpha2: 'US'
-        },
-        options: {
-            submitForSettlement: true
-        }
-    }, function(err, result) {
+    stripe.charges.create({
+        amount: ((req.body.studentSeatsAmount * req.body.studentPrice) + (req.body.adultSeatsAmount * req.body.adultPrice) + 1).toFixed(2) * 100,
+        currency: 'USD',
+        source: req.body.stripeToken,
+        description: seats.length + ' Ticket' + (seats.length > 1 ? 's' : '')
+    }, function(err, charge) {
         if (err) console.error(err);
 
-        if (result.success) {
-            var transaction = result.transaction;
+        pool.getConnection(function(err, connection) {
+            if (err) console.error(err);
 
-            pool.getConnection(function(err, connection) {
-                if (err) console.error(err);
-
-                seats.forEach(function(seat) {
-                    var insert = {transactionid: transaction.id, showid: req.body.showid, seat: seat};
-                    connection.query('INSERT INTO `purchased_seats` SET ?;', insert);
-                });
-
-                connection.release();
+            seats.forEach(function(seat) {
+                var insert = {transactionid: charge.id, showid: req.body.showID, seat: seat};
+                connection.query('INSERT INTO `purchased_seats` SET ?;', insert);
             });
 
-            res.json({
-                "confirmationNumber": transaction.id,
-                "card": {
-                    "last4": transaction.creditCard.last4,
-                    "type": transaction.creditCard.cardType
-                }
-            });
+            connection.release();
+        });
 
-            mailgun.messages().send({
-                from: process.env.MAIL_FROM,
-                to: transaction.customer.email,
-                subject: 'Ticket Confirmation ' + transaction.id,
-                text: 'Thank you for purchasing tickets for ' + req.body.showname + '! Your confirmation number is ' + transaction.id + '. Please keep this for your records.'
-            }, function(err, body) {
-                if (err) console.error(err);
-            });
-        }
+        res.json({
+            "card": {
+                "last4": charge.source.last4,
+                "type": charge.source.brannd
+            }
+        });
     });
 });
 

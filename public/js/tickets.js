@@ -54,139 +54,63 @@ $('body').on('click', '.show-selection-link', function(e) {
     }
 
     getTemplate('/views/partials/checkout.ejs', function(err, template) {
+        var totalPrice = (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice) + 1;
         var checkout = ejs.render(template, {
             selectedSeats: selectedSeats,
             show: selectedShow,
             time: new Date(selectedShow.time),
             adultSeatsAmount: adultSeatsAmount,
             studentSeatsAmount: studentSeatsAmount,
-            totalPrice: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice)
+            totalPrice: totalPrice
         });
+
         $('#content').html(checkout);
         $('.breadcrumb li:eq(2)').toggleClass('active');
 
-        // Braintree Setup
-        $.ajax({
-            type: 'GET',
-            url: '/api/v1/token',
-            dataType: 'JSON',
-            success: function(data) {
-                braintree.setup(data.clientToken, 'custom', {
-                    id: 'payment-form',
-                    onReady: function() {
-                        $('.spinner').remove();
-                        $('#payment-form').removeClass('hidden');
+        var handler = StripeCheckout.configure({
+            key: window.stripePublishableKey,
+            amount: totalPrice.toFixed(2) * 100,
+            name: 'Forsyth Theatre',
+            description: adultSeatsAmount + studentSeatsAmount + ' Ticket' + (adultSeatsAmount + studentSeatsAmount > 1 ? 's' : '') + ' ($' + totalPrice.toFixed(2) + ')',
+            billingAddress: true,
+            allowRememberMe: false,
+            locale: 'auto',
+            token: function(token) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/v1/checkout',
+                    dataType: 'JSON',
+                    data: {
+                        stripeToken: token.id,
+                        showID: selectedShow.id,
+                        studentPrice: selectedShow.studentprice,
+                        adultPrice: selectedShow.adultprice,
+                        seats: selectedSeats.join(),
+                        studentSeatsAmount: studentSeatsAmount,
+                        adultSeatsAmount: adultSeatsAmount
                     },
-                    onPaymentMethodReceived: function(obj) {
-                        $.ajax({
-                            type: 'GET',
-                            url: '/api/v1/shows/' + selectedShow.id + '/purchased_seats',
-                            dataType: 'JSON',
-                            success: function(data) {
-                                var seats = selectedSeats.join(',');
-                                var problem = false;
-                                data.forEach(function(purchasedSeat) {
-                                    if (seats.indexOf(purchasedSeat) != -1) {
-                                        problem = true;
-                                    }
-                                });
-
-                                if (!problem) {
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: '/api/v1/checkout',
-                                        dataType: 'JSON',
-                                        data: {
-                                            seats: $('input[name=seats]').val(),
-                                            price: (studentSeatsAmount * selectedShow.studentprice) + (adultSeatsAmount * selectedShow.adultprice),
-                                            showid: $('input[name=showid]').val(),
-                                            showname: $('input[name=showname]').val(),
-                                            paymentMethodNonce: obj['nonce'],
-                                            firstName: $('input[name=firstName]').val(),
-                                            lastName: $('input[name=lastName]').val(),
-                                            email: $('input[name=email]').val(),
-                                            phone: $('input[name=phone]').val(),
-                                            address: $('input[name=address]').val(),
-                                            city: $('input[name=city]').val(),
-                                            state: $('input[name=state]').val(),
-                                            zip: $('input[name=zip]').val()
-                                        },
-                                        success: function(data) {
-                                            getTemplate('/views/partials/confirmation.ejs', function(err, template) {
-                                                var confirmation = ejs.render(template, {
-                                                    confirmationNumber: data.confirmationNumber,
-                                                    show: selectedShow,
-                                                    time: new Date(selectedShow.time)
-                                                });
-                                                $('#content').html(confirmation);
-                                                $('.breadcrumb li:eq(3)').toggleClass('active');
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    $('#purchase-button').popover({
-                                        content: 'Sorry, but the seats that you originally selected are no longer available. Please refresh the page and try again.',
-                                        placement: 'left',
-                                        container: 'body'
-                                    }).popover('show');
-                                    setTimeout(function() {
-                                        $('#checkout-button').popover('hide');
-                                    }, 3000);
-                                }
-                            }
+                    success: function(data) {
+                        getTemplate('/views/partials/confirmation.ejs', function(err, template) {
+                            var confirmation = ejs.render(template, {
+                                show: selectedShow,
+                                time: new Date(selectedShow.time)
+                            });
+                            $('#content').html(confirmation);
+                            $('.breadcrumb li:eq(3)').toggleClass('active');
                         });
-                    },
-                    hostedFields: {
-                        number: {
-                            selector: '#card-number',
-                            placeholder: 'Credit Card Number'
-                        },
-                        cvv: {
-                            selector: '#cvv',
-                            placeholder: 'CVV'
-                        },
-                        expirationDate: {
-                            selector: '#expiration-date',
-                            placeholder: 'MM/YY'
-                        },
-                        styles: {
-                            'input': {
-                                'font-family': '"Helvetica Neue", Helvetica, Arial, sans-serif',
-                                'font-size': '14px'
-                            },
-                            '::-moz-placeholder': {'color': '#999'},
-                            ':-ms-input-placeholder': {'color': '#999'},
-                            '::-webkit-input-placeholder': {'color': '#999'}
-                        }
-                    },
-                    onError: function(type, message) {
-                        if (type === 'VALIDATION') {
-                            $('#purchase-button').popover({
-                                content: message,
-                                placement: 'left',
-                                container: 'body'
-                            }).popover('show');
-                            setTimeout(function() {
-                                $('#checkout-button').popover('hide');
-                            }, 3000);
-                        } else if (type === 'CONFIGURATION') {
-                            $('#content').html('Sorry, but we could not configure the payment processor. Please email Payton Burnett at pburnett@forsythr3.k12.mo.us, and include the following message: ' + message);
-                        }
                     }
                 });
             }
         });
 
-        $('#secure-popover-text').popover({
-            trigger: 'hover focus',
-            content: 'All credit card information is processed by our external provider, <a href="https://www.braintreepayments.com/" target="_blank">BrainTree</a> (a PayPal company), and fully encrypted every step of the way.',
-            html: true,
-            placement: 'right',
-            container: 'body',
-            delay: {
-                'show': 100,
-                'hide': 600
-            }
+        $('#purchase-button').on('click', function(e) {
+            e.preventDefault();
+
+            handler.open();
+        });
+
+        $(window).on('popstate', function() {
+            handler.close();
         });
     });
 }).on('click', '#seats-goback-button', function(e) {

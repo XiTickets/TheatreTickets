@@ -1,103 +1,54 @@
 <div class="row">
-    <div class="col-xs-offset-2 col-xs-8 well">
-        <div class="col-xs-4">
-            <img src="<%- show.logourl %>" width="100%">
-        </div>
-
-        <div class="col-xs-4">
-            <h3><%- show.name %></h3>
-            <h4><%- (time.getMonth() + 1) + '/'
-                + time.getDate() + '/'
-                + time.getFullYear() + ' '
-                + ((time.getHours() + 24) % 12 || 12) + ':'
-                + ('0' + time.getMinutes()).slice(-2)
-                + ((time.getHours() >= 12) ? "PM" : "AM") %></h4>
-        </div>
-
-        <div class="col-xs-4">
-            <p>Number of Adult Tickets: <b><%- adultSeatsAmount %></b></p>
-            <p>Number of Student Tickets: <b><%- studentSeatsAmount %></b></p>
-            <p>Total Price: <b>$<%- totalPrice %>.00</b></p>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-offset-2 col-xs-8 well">
-        <div class="spinner">
-            <div class="double-bounce1"></div>
-            <div class="double-bounce2"></div>
-        </div>
-
-        <form id="payment-form" class="hidden">
-            <div class="row">
-                <button id="secure-popover-text" href="#" class="btn btn-link pull-right" type="button">
-                    <small><span class="glyphicon glyphicon-lock"></span> Your information is secure.</small>
-                </button>
-            </div>
-
-            <div class="row form-group">
-                <div class="col-xs-3">
-                    <input type="text" class="form-control" name="firstName" placeholder="First Name" maxlength="255"
-                           required>
-                </div>
-                <div class="col-xs-3">
-                    <input type="text" class="form-control" name="lastName" placeholder="Last Name" maxlength="255"
-                           required>
-                </div>
-                <div class="col-xs-3">
-                    <input type="email" class="form-control" name="email" placeholder="Email" maxlength="255" required>
-                </div>
-                <div class="col-xs-3">
-                    <input type="tel" class="form-control" name="phone" placeholder="Phone" maxlength="25" required>
-                </div>
-            </div>
-
-            <div class="row form-group">
-                <div class="col-xs-5">
-                    <input type="text" class="form-control" name="address" placeholder="Address" required>
-                </div>
-                <div class="col-xs-3">
-                    <input type="text" class="form-control" name="city" placeholder="City" required>
-                </div>
-                <div class="col-xs-2">
-                    <input type="text" class="form-control" name="state" placeholder="State" maxlength="2" required>
-                </div>
-                <div class="col-xs-2">
-                    <input type="text" class="form-control" name="zip" placeholder="ZIP" maxlength="5" required>
-                </div>
-            </div>
-
-            <div class="row form-group">
-                <div class="col-xs-offset-2 col-xs-8">
+    <div class="well well-lg">
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="row">
                     <div class="col-xs-6">
-                        <div class="form-control" id="card-number"></div>
+                        <img src="<%- show.logourl %>" width="100%">
                     </div>
 
-                    <div class="col-xs-3">
-                        <div class="form-control" id="cvv"></div>
+                    <div class="col-xs-6">
+                        <h3><%- show.name %></h3>
+                        <h4><%- (time.getMonth() + 1) + '/'
+                            + time.getDate() + '/'
+                            + time.getFullYear() + ' '
+                            + ((time.getHours() + 24) % 12 || 12) + ':'
+                            + ('0' + time.getMinutes()).slice(-2)
+                            + ((time.getHours() >= 12) ? "PM" : "AM") %></h4>
                     </div>
+                </div>
 
-                    <div class="col-xs-3">
-                        <div class="form-control" id="expiration-date"></div>
-                    </div>
+                <br>
+
+                <div class="row col-xs-12">
+                    <h5>Please verify your details before completing your purchase.</h5>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-xs-offset-10 col-xs-2">
-                    <input type="hidden" value="<%- selectedShow.id %>" name="showid" />
-                    <input type="hidden" value="<%- selectedShow.name %>" name="showname" />
-                    <input type="hidden" value="<%- selectedSeats.join() %>" name="seats" />
-                    <input class="btn btn-primary pull-right" id="purchase-button" type="submit" value="Purchase">
-                </div>
+            <div class="col-xs-3">
+                <p>Number of Adult Tickets: <b><%- adultSeatsAmount %></b></p>
+                <p>Number of Student Tickets: <b><%- studentSeatsAmount %></b></p>
+                <p>Subtotal: <b>$<%- (totalPrice - 1).toFixed(2) %></b></p>
+                <p>Processing Fee: <b>$1.00</b></p>
+                <br>
+                <h4>Total Price: <b>$<%- totalPrice.toFixed(2) %></b></h4>
             </div>
-        </form>
+
+            <div class="col-xs-3">
+                <h5><b>How will I receive my tickets?</b></h5>
+                <p>Your tickets will be reserved under the name you provide. They can be picked up from the Will Call
+                    Station in the theater lobby on the day of the performance.</p>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="row pre-footer">
     <div class="col-xs-2">
         <button class="btn btn-default" id="checkout-goback-button">Go Back</button>
+    </div>
+
+    <div class="col-xs-offset-8 col-xs-2">
+        <button class="btn btn-primary pull-right" id="purchase-button">Purchase</button>
     </div>
 </div>
